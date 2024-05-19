@@ -1,6 +1,6 @@
 package org.example;
 
-import org.example.interfaces.UndoRedo;
+import org.example.utils.UndoRedo;
 
 public class Main extends javax.swing.JFrame{
 

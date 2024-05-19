@@ -1,4 +1,4 @@
-package org.example.interfaces;
+package org.example.utils;
 
 import javax.swing.JTextArea;
 import javax.swing.JComponent;
