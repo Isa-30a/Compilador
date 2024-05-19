@@ -1,5 +1,7 @@
 package org.example;
 
+import org.example.interfaces.UndoRedo;
+
 public class Main extends javax.swing.JFrame{
 
     /**
@@ -7,6 +9,7 @@ public class Main extends javax.swing.JFrame{
      */
 
     NumeroLinea num_linea;
+    public UndoRedo undoredo;
     public Main() {
         initComponents();
         num_linea = new NumeroLinea(editor);
@@ -22,8 +25,12 @@ public class Main extends javax.swing.JFrame{
     // <editor-fold defaultstate="collapsed" desc="Generated Code">
     private void initComponents() {
 
+
         jScrollPane1 = new javax.swing.JScrollPane();
         editor = new javax.swing.JTextArea();
+      
+        undoredo = new UndoRedo();
+        undoredo.add(editor);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Tovar IDE");
