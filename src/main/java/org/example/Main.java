@@ -16,6 +16,7 @@ public class Main extends javax.swing.JFrame{
         initComponents();
         num_linea = new NumeroLinea(editor);
         jScrollPane1.setRowHeaderView(num_linea);
+        setLocationRelativeTo(null);
     }
 
     /**
