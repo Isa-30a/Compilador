@@ -13,12 +13,11 @@ public class NumeroLinea extends JPanel
     public final static float LEFT = 0.0f;
     public final static float CENTER = 0.5f;
     public final static float RIGHT = 1.0f;
-    private Color color1 = new Color(7,86,100);
     private final static Border OUTER = new MatteBorder(0, 0, 0, 2,Color.BLACK);
 
     private final static int HEIGHT = Integer.MAX_VALUE - 1000000;
 
-    private JTextComponent component;
+    private final JTextComponent component;
 
     private boolean updateFont;
     private int borderGap;
@@ -41,10 +40,9 @@ public class NumeroLinea extends JPanel
     
     public NumeroLinea(JTextComponent component, int minimumDisplayDigits) {
         this.component = component;
-
         setFont(component.getFont());
-
         setBorderGap(5);
+        Color color1 = new Color(7, 86, 100);
         setCurrentLineForeground(color1);
         setDigitAlignment(RIGHT);
         setMinimumDisplayDigits(minimumDisplayDigits);
@@ -137,8 +135,8 @@ public class NumeroLinea extends JPanel
         int availableWidth = getSize().width - insets.left - insets.right;
 
         Rectangle clip = g.getClipBounds();
-        int rowStartOffset = component.viewToModel(new Point(0, clip.y));
-        int endOffset = component.viewToModel(new Point(0, clip.y + clip.height));
+        int rowStartOffset = component.viewToModel2D(new Point(0, clip.y));
+        int endOffset = component.viewToModel2D(new Point(0, clip.y + clip.height));
 
         while (rowStartOffset <= endOffset) {
             try {
