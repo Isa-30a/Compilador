@@ -162,11 +162,7 @@ public class NumeroLinea extends JPanel
         int caretPosition = component.getCaretPosition();
         Element root = component.getDocument().getDefaultRootElement();
 
-        if (root.getElementIndex(rowStartOffset) == root.getElementIndex(caretPosition)) {
-            return true;
-        } else {
-            return false;
-        }
+        return root.getElementIndex(rowStartOffset) == root.getElementIndex(caretPosition);
     }
 
     protected String getTextLineNumber(int rowStartOffset) {
@@ -258,6 +254,29 @@ public class NumeroLinea extends JPanel
 //
 //  Implement DocumentListener interface
 //
+/*
+ *  A document change may affect the number of displayed lines of text.
+ *  Therefore the lines numbers will also change.
+ */
+private void documentChanged() {
+    //  View of the component has not been updated at the time
+    //  the DocumentEvent is fired
+
+    SwingUtilities.invokeLater(() -> {
+        try {
+            int endPos = component.getDocument().getLength();
+            Rectangle rect = component.modelToView(endPos);
+
+            if (rect != null && rect.y != lastHeight) {
+                setPreferredWidth();
+                repaint();
+                lastHeight = rect.y;
+            }
+        } catch (BadLocationException ex) {
+            /* nothing to do */ }
+    });
+}
+
     @Override
     public void changedUpdate(DocumentEvent e) {
         documentChanged();
@@ -271,32 +290,6 @@ public class NumeroLinea extends JPanel
     @Override
     public void removeUpdate(DocumentEvent e) {
         documentChanged();
-    }
-
-    /*
-	 *  A document change may affect the number of displayed lines of text.
-	 *  Therefore the lines numbers will also change.
-     */
-    private void documentChanged() {
-        //  View of the component has not been updated at the time
-        //  the DocumentEvent is fired
-
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    int endPos = component.getDocument().getLength();
-                    Rectangle rect = component.modelToView(endPos);
-
-                    if (rect != null && rect.y != lastHeight) {
-                        setPreferredWidth();
-                        repaint();
-                        lastHeight = rect.y;
-                    }
-                } catch (BadLocationException ex) {
-                    /* nothing to do */ }
-            }
-        });
     }
 
     @Override
