@@ -31,15 +31,16 @@ public class mainView extends javax.swing.JFrame {
         undoredo.add(editor);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Compilador IDE");
+        setTitle("Tovar IDE");
         setBackground(new java.awt.Color(0, 0, 0));
 
         editor.setColumns(20);
         editor.setRows(5);
+        editor.setFont(new Font("JetBrains Mono NL", Font.BOLD, 12));
         editor.setMargin(new java.awt.Insets(5, 10,5,10));
         editor.setWrapStyleWord(true);
         editor.setLineWrap(true);
-        editor.setFont(new Font("Monospaced", Font.PLAIN, 12));
+        //editor.setFont(new Font("Monospaced", Font.PLAIN, 12));
         panelcodigo.setViewportView(editor);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
