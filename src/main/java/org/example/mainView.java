@@ -3,6 +3,8 @@ package org.example;
 import javax.swing.*;
 import org.example.utils.UndoRedo;
 
+import java.awt.*;
+
 public class mainView extends javax.swing.JFrame {
     NumeroLinea num_linea;
     public UndoRedo undoredo;
@@ -34,6 +36,10 @@ public class mainView extends javax.swing.JFrame {
 
         editor.setColumns(20);
         editor.setRows(5);
+        editor.setMargin(new java.awt.Insets(5, 10,5,10));
+        editor.setWrapStyleWord(true);
+        editor.setLineWrap(true);
+        editor.setFont(new Font("Monospaced", Font.PLAIN, 12));
         panelcodigo.setViewportView(editor);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
