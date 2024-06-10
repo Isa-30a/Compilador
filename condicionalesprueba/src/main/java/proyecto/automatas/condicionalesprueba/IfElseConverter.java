@@ -22,8 +22,6 @@ public class IfElseConverter {
             oldPseudocode = pseudocode;
             
             pseudocode = convertIfElse(pseudocode);
-            pseudocode = convertAND(pseudocode);
-            pseudocode = convertOR(pseudocode);
             //pseudocode = convertIfElseVarius(pseudocode);
             //pseudocode = convertIfElseNested(pseudocode);
         } while (!pseudocode.equals(oldPseudocode));
@@ -154,32 +152,6 @@ public class IfElseConverter {
         return sb.toString();
     }
 
-    private static String convertAND(String p){
-        // Defines a pattern to match all Y that have at least one space before and after the Y   
-        Pattern pattern = Pattern.compile("\s+Y\s+");
-        Matcher matcher = pattern.matcher(p);
-        StringBuffer sb= new StringBuffer();
-
-        //Processes all matches found by the matcher
-        while(matcher.find()){   
-            //Appends the replacement to the result buffer
-            matcher.appendReplacement(sb, " && ");
-        }
-        //Append the rest of the pseudocode that was not matched
-        matcher.appendTail(sb);
-        return sb.toString();
-    }
-    
-    private static String convertOR(String p){
-        Pattern pattern = Pattern.compile("\s+O\s+");
-        Matcher matcher = pattern.matcher(p);
-        StringBuffer sb= new StringBuffer();
-        while (matcher.find()) {
-            matcher.appendReplacement(sb, " || ");
-        }
-        matcher.appendTail(sb);
-        return sb.toString();
-    }
 
     private static String convertSwitchCase(String pseudocode) {
         Pattern pattern = Pattern.compile("(?sm)SEGUN\\s*(\\w+)\\s*HACER\\s*(.*?)\\s*FIN SEGUN");

@@ -35,6 +35,7 @@ public class Condicionalesprueba {
         
         
         String convertedCode = IfElseConverter.convertToCpp(pseudocodevarius);
+        convertedCode = LogicalOperators.convertToCpp(pseudocodevarius);
         System.out.println(convertedCode );
     }
 }
