@@ -72,12 +72,16 @@ public class LogicalOperators {
     }
     
     private static String convertOR(String p){
+        // Defines a pattern to match all "O"s that have at least one space before and after the O  
         Pattern pattern = Pattern.compile("\s+O\s+");
         Matcher matcher = pattern.matcher(p);
         StringBuffer sb= new StringBuffer();
+
+        //Processes all matches found by the matcher
         while (matcher.find()) {
             matcher.appendReplacement(sb, " || ");
         }
+        //Append the rest of the pseudocode that was not matched
         matcher.appendTail(sb);
         return sb.toString();
     }

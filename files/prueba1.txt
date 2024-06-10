@@ -1,0 +1,10 @@
+SI (10>=20) ENTONCES:
+    SI (variable Y CONSTANTE O def) ENTONCES:
+        SI(pepe O wasa) ENTONCES:
+            var = 10
+        SINO:
+            n = FALSO
+        FINSI
+    FINSI
+FINSI     
+        

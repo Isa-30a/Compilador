@@ -22,12 +22,31 @@ public class IfElseConverter {
             oldPseudocode = pseudocode;
             
             //pseudocode = convertIfElse(pseudocode);
-            pseudocode = convertIfElseVarius(pseudocode);
-            //pseudocode = convertIfElseNested(pseudocode);
+            //pseudocode = convertIfElseVarius(pseudocode);
+            //pseudocode = convertIfElseNested(pseudocode)
+            if (containsNestedIf(pseudocode)) {
+                pseudocode = convertIfElseNested(pseudocode);
+            } else if (containsMultipleElse(pseudocode)) {
+                pseudocode = convertIfElseVarius(pseudocode);
+            } else {
+                pseudocode = convertIfElse(pseudocode);
+            }
         } while (!pseudocode.equals(oldPseudocode));
 
         pseudocode = restoreQuotedText(pseudocode);
         return pseudocode;
+    }
+
+        private static boolean containsNestedIf(String pseudocode) {
+        Pattern pattern = Pattern.compile("SI\\s*\\(([^\\)]+)\\)\\s*ENTONCES\\s*.SI\\s\\(([^\\)]+)\\)", Pattern.DOTALL);
+        Matcher matcher = pattern.matcher(pseudocode);
+        return matcher.find();
+    }
+
+    private static boolean containsMultipleElse(String pseudocode) {
+        Pattern pattern = Pattern.compile("SINO\\s*\\(([^\\)]+)\\)", Pattern.DOTALL);
+        Matcher matcher = pattern.matcher(pseudocode);
+        return matcher.find();
     }
 
     private static String protectQuotedText(String pseudocode) {
@@ -64,7 +83,7 @@ public class IfElseConverter {
 //este solo puede hacer if con un solo else
    private static String convertIfElse(String pseudocode) {
 
-        Pattern pattern = Pattern.compile("(?sm)SI\\s*(\\([^\\)]+\\))\\s*ENTONCES\\s*(.*?)\\s*(SINO\\s*(.*?)\\s*)?FINSI");
+        Pattern pattern = Pattern.compile("(?sm)SI\\s*(\\([^\\)]+\\))\\s*ENTONCES:\\s*(.*?)\\s*(SINO:\\s*(.*?)\\s*)?FINSI");
         Matcher matcher = pattern.matcher(pseudocode);
         StringBuffer sb = new StringBuffer();
         while (matcher.find()) {
@@ -84,7 +103,7 @@ public class IfElseConverter {
     }
    
    private static String convertIfElseVarius(String pseudocode) {
-        Pattern pattern = Pattern.compile("SI\\s*\\(([^\\)]+)\\)\\s*ENTONCES\\s*(.*?)\\s*(SINO\\s*\\(([^\\)]+)\\)\\s*ENTONCES\\s*(.*?))*SINO\\s*(.*?)\\s*FINSI", Pattern.DOTALL);
+        Pattern pattern = Pattern.compile("SI\\s*\\(([^\\)]+)\\)\\s*ENTONCES:\\s*(.*?)\\s*(SINO\\s*\\(([^\\)]+)\\)\\s*ENTONCES\\s*(.*?))*SINO:\\s*(.*?)\\s*FINSI", Pattern.DOTALL);
         Matcher matcher = pattern.matcher(pseudocode);
         StringBuffer sb = new StringBuffer();
         
@@ -94,21 +113,21 @@ public class IfElseConverter {
             String elseBlock = matcher.group(6).trim();
 
             // Convertir el bloque THEN
-            String replacement = "if (" + condition + ") {\n\t" + thenBlock + ";\n}";
+            String replacement = "if (" + condition + ") {\n\t" + thenBlock + "\n}";
 
             // Convertir los bloques SINO
-            String elseIfPatternStr = "SINO\\s*\\(([^\\)]+)\\)\\s*ENTONCES\\s*(.*?)(?=SINO\\s*\\(|SINO\\s|FINSI)";
+            String elseIfPatternStr = "SINO\\s*\\(([^\\)]+)\\)\\s*ENTONCES:\\s*(.*?)(?=SINO\\s*\\(|SINO:\\s|FINSI)";
             Pattern elseIfPattern = Pattern.compile(elseIfPatternStr, Pattern.DOTALL);
             Matcher elseIfMatcher = elseIfPattern.matcher(pseudocode.substring(matcher.start(), matcher.end()));
             
             while (elseIfMatcher.find()) {
                 String elseifCondition = elseIfMatcher.group(1).trim();
                 String elseifBlock = elseIfMatcher.group(2).trim();
-                replacement += " else if (" + elseifCondition + ") {\n\t" + elseifBlock + ";\n}";
+                replacement += " else if (" + elseifCondition + ") {\n\t" + elseifBlock + "\n}";
             }
             
             if (!elseBlock.isEmpty()) {
-                replacement += " else {\n\t" + elseBlock + ";\n}";
+                replacement += " else {\n\t" + elseBlock + "\n}";
             }
 
             // Reemplazar en el pseudocódigo
@@ -120,36 +139,41 @@ public class IfElseConverter {
     }
 
     
-        private static String convertIfElseNested(String pseudocode) {
-        // Define a pattern to match the nested structures of SI...ENTONCES...SINO...FIN DEL SI
-        Pattern pattern = Pattern.compile("(?sm)SI\\s*(\\([^\\)]+\\))\\s*ENTONCES\\s*(.*?)\\s*(SINO\\s*(.*?)\\s*)?FINSI");
+    private static String convertIfElseNested(String pseudocode) {
+        Pattern pattern = Pattern.compile(
+            "SI\\s*\\(([^\\)]+)\\)\\s*ENTONCES:\\s*([^SINO])(SINO:\\s([^FINSI]*))?\\s*FINSI", 
+            Pattern.DOTALL
+        );
+
         Matcher matcher = pattern.matcher(pseudocode);
         StringBuffer sb = new StringBuffer();
 
-        // Process all matches found by the matcher
         while (matcher.find()) {
             String condition = matcher.group(1).trim();
             String thenBlock = matcher.group(2).trim();
             String elseBlock = matcher.group(4) != null ? matcher.group(4).trim() : null;
 
-            // Recursively convert nested pseudocode within the thenBlock and elseBlock
             thenBlock = convertIfElseNested(thenBlock);
             if (elseBlock != null) {
                 elseBlock = convertIfElseNested(elseBlock);
             }
 
-            // Form the replacement string
-            String replacement = "if " + condition + " {\n" + thenBlock + ";\n}";
+            String replacement = "if (" + condition + ") {\n" + thenBlock + "\n}";
             if (elseBlock != null) {
-                replacement += " else {\n" + elseBlock + ";\n}";
+                replacement += " else {\n" + elseBlock + "\n}";
             }
 
-            // Append the replacement to the result buffer
             matcher.appendReplacement(sb, replacement);
         }
-        // Append the rest of the pseudocode that was not matched
         matcher.appendTail(sb);
-        return sb.toString();
+
+        String result = sb.toString();
+        result = result.replace("SI ", "if");
+        result = result.replace("ENTONCES:", "{");
+        result = result.replace("SINO:", "} else {");
+        result = result.replace("FINSI", "}");
+
+        return result;
     }
 
 
@@ -189,4 +213,6 @@ public class IfElseConverter {
         matcher.appendTail(sb);
         return sb.toString();
     }
+
+    
 }
