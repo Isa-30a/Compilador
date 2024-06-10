@@ -169,6 +169,7 @@ public class IfElseConverter {
         matcher.appendTail(sb);
         return sb.toString();
     }
+    
     private static String convertOR(String p){
         Pattern pattern = Pattern.compile("\s+O\s+");
         Matcher matcher = pattern.matcher(p);
@@ -176,6 +177,43 @@ public class IfElseConverter {
         while (matcher.find()) {
             matcher.appendReplacement(sb, " || ");
         }
+        matcher.appendTail(sb);
+        return sb.toString();
+    }
+
+    private static String convertSwitchCase(String pseudocode) {
+        Pattern pattern = Pattern.compile("(?sm)SEGUN\\s*(\\w+)\\s*HACER\\s*(.*?)\\s*FIN SEGUN");
+        Matcher matcher = pattern.matcher(pseudocode);
+        StringBuffer sb = new StringBuffer();
+
+        while (matcher.find()) {
+            String variable = matcher.group(1).trim();
+            String casesBlock = matcher.group(2).trim();
+
+            String casePatternStr = "SI\\s*([^:]+):\\s*(.*?)(?=SI|DEFECTO|$)";
+            Pattern casePattern = Pattern.compile(casePatternStr, Pattern.DOTALL);
+            Matcher caseMatcher = casePattern.matcher(casesBlock);
+
+            StringBuilder switchCode = new StringBuilder("switch(" + variable + ") {\n");
+
+            while (caseMatcher.find()) {
+                String caseValue = caseMatcher.group(1).trim();
+                String caseBody = caseMatcher.group(2).trim().replaceAll("\\n", "\n    ");
+                switchCode.append("    case ").append(caseValue).append(":\n        ").append(caseBody).append(";\n        break;\n");
+            }
+
+            Pattern defaultPattern = Pattern.compile("DEFECTO:\\s*(.*)", Pattern.DOTALL);
+            Matcher defaultMatcher = defaultPattern.matcher(casesBlock);
+            if (defaultMatcher.find()) {
+                String defaultBody = defaultMatcher.group(1).trim().replaceAll("\\n", "\n    ");
+                switchCode.append("    default:\n        ").append(defaultBody).append(";\n}");
+            } else {
+                switchCode.append("}");
+            }
+
+            matcher.appendReplacement(sb, switchCode.toString());
+        }
+
         matcher.appendTail(sb);
         return sb.toString();
     }
