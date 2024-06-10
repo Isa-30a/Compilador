@@ -21,8 +21,8 @@ public class IfElseConverter {
         do {
             oldPseudocode = pseudocode;
             
-            pseudocode = convertIfElse(pseudocode);
-            //pseudocode = convertIfElseVarius(pseudocode);
+            //pseudocode = convertIfElse(pseudocode);
+            pseudocode = convertIfElseVarius(pseudocode);
             //pseudocode = convertIfElseNested(pseudocode);
         } while (!pseudocode.equals(oldPseudocode));
 

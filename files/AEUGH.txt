@@ -1,0 +1,12 @@
+SI (edad == 2) ENTONCES
+numero = numero + 1
+SINO (edad >= 18 Y edad < 65) ENTONCES:
+numero = 4
+SINO (edad >= 65 < 80) ENTONCES:
+numero = 5
+SINO (edad >= 80) ENTONCES:
+numero = 5
+numero = 5
+SINO
+numero = 7
+FINSI
