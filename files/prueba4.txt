@@ -1,0 +1,15 @@
+SI (x > 0) ENTONCES
+                SEGUN variable HACER:
+                    CAS 1:  
+                        print('Case 1')   
+                         FINCA  
+                     CAS 2:   
+                         print('Case 2')   
+                         FINCA  
+                     DEFECTO:   
+                         print('Default Case')   
+                         FINCA   
+                     FIN SEGUN  
+             SINO   
+                 print('x is not positive')   
+             FINSI";
