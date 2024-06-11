@@ -1,0 +1,1 @@
+Para el proyecto se necesita el JDK en la versión 21 
