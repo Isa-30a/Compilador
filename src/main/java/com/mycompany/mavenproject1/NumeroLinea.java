@@ -1,4 +1,4 @@
-package org.example;
+package com.mycompany.mavenproject1;
 import java.awt.*;
 import java.beans.*;
 import java.util.HashMap;
@@ -11,7 +11,7 @@ public class NumeroLinea extends JPanel
         implements CaretListener, DocumentListener, PropertyChangeListener {
 
     public final static float LEFT = 0.0f;
-    public final static float CENTER = 0.5f;
+    public final static float CENTER = 0.10f;
     public final static float RIGHT = 1.0f;
     private final static Border OUTER = new MatteBorder(0, 0, 0, 2,Color.BLACK);
 
