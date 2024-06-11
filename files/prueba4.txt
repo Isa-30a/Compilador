@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 SI (x > 0) ENTONCES:
+=======
+SI (x > 0) ENTONCES
+>>>>>>> bae8a1bd925fea273b6b8f4a11da73ddf8a42e3c
                 SEGUN variable HACER:
                     CAS 1:  
                         print('Case 1')   
@@ -10,6 +14,10 @@ SI (x > 0) ENTONCES:
                          print('Default Case')   
                          FINCA   
                      FIN SEGUN  
+<<<<<<< HEAD
              SINO:  
+=======
+             SINO   
+>>>>>>> bae8a1bd925fea273b6b8f4a11da73ddf8a42e3c
                  print('x is not positive')   
              FINSI";
