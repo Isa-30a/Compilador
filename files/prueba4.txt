@@ -12,4 +12,4 @@ SI (x > 0) ENTONCES:
                      FIN SEGUN  
              SINO:  
                  print('x is not positive')   
-             FINSI";
+             FINSI
