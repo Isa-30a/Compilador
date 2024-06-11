@@ -1,0 +1,13 @@
+SEGUN variable HACER:
+SI 1:
+SEGUN variable2 HACER:
+SI 3:
+a = 1
+DEFECTO:
+b = 4
+FIN SEGUN
+SI 2:
+a = 2
+DEFECTO:
+a = 0
+FIN SEGUN

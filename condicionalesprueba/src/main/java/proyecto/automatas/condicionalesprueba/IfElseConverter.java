@@ -2,6 +2,7 @@ package proyecto.automatas.condicionalesprueba;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,12 +22,23 @@ public class IfElseConverter {
         do {
             oldPseudocode = pseudocode;
             
-            //pseudocode = convertIfElse(pseudocode);
+            pseudocode = convertSwitchCase(pseudocode);
             //pseudocode = convertIfElseVarius(pseudocode);
             //pseudocode = convertIfElseNested(pseudocode)
-            if (containsNestedIf(pseudocode)) {
+            /*if (containsNestedIf(pseudocode)) {
                 pseudocode = convertIfElseNested(pseudocode);
             } else if (containsMultipleElse(pseudocode)) {
+                pseudocode = convertIfElseVarius(pseudocode);
+            } else {
+                pseudocode = convertIfElse(pseudocode);
+            }*/
+            if (containsSwitchCase(pseudocode)) {
+                pseudocode = convertSwitchCase(pseudocode);
+            }
+            if (containsNestedIf(pseudocode)) {
+                pseudocode = convertIfElseNested(pseudocode);
+            }
+            if (containsMultipleElse(pseudocode)) {
                 pseudocode = convertIfElseVarius(pseudocode);
             } else {
                 pseudocode = convertIfElse(pseudocode);
@@ -38,7 +50,7 @@ public class IfElseConverter {
     }
 
         private static boolean containsNestedIf(String pseudocode) {
-        Pattern pattern = Pattern.compile("SI\\s*\\(([^\\)]+)\\)\\s*ENTONCES\\s*.SI\\s\\(([^\\)]+)\\)", Pattern.DOTALL);
+        Pattern pattern = Pattern.compile("SI\\s*\\(([^\\)]+)\\)\\s*ENTONCES\\s*.*SI\\s*\\(([^\\)]+)\\)", Pattern.DOTALL);
         Matcher matcher = pattern.matcher(pseudocode);
         return matcher.find();
     }
@@ -49,6 +61,12 @@ public class IfElseConverter {
         return matcher.find();
     }
 
+    private static boolean containsSwitchCase(String pseudocode) {
+        Pattern pattern = Pattern.compile("SEGUN\\s*(\\w+)\\s*HACER", Pattern.DOTALL);
+        Matcher matcher = pattern.matcher(pseudocode);
+        return matcher.find();
+    }
+        
     private static String protectQuotedText(String pseudocode) {
         Pattern pattern = Pattern.compile("\"([^\"]*)\"");
         Matcher matcher = pattern.matcher(pseudocode);
@@ -79,7 +97,6 @@ public class IfElseConverter {
         }
         return pseudocode;
     }
-    
 //este solo puede hacer if con un solo else
    private static String convertIfElse(String pseudocode) {
 
@@ -177,42 +194,52 @@ public class IfElseConverter {
     }
 
 
-    private static String convertSwitchCase(String pseudocode) {
-        Pattern pattern = Pattern.compile("(?sm)SEGUN\\s*(\\w+)\\s*HACER\\s*(.*?)\\s*FIN SEGUN");
-        Matcher matcher = pattern.matcher(pseudocode);
-        StringBuffer sb = new StringBuffer();
+    
+    public static String convertSwitchCase(String pseudocode) {
+        // Dividir la entrada en líneas
+        String[] lines = pseudocode.split("\n");
+        
+        // Pila para manejar el contexto de los bloques
+        Stack<String> stack = new Stack<>();
+        StringBuilder convertedCode = new StringBuilder();
 
-        while (matcher.find()) {
-            String variable = matcher.group(1).trim();
-            String casesBlock = matcher.group(2).trim();
+        for (String line : lines) {
+            line = line.trim();
 
-            String casePatternStr = "SI\\s*([^:]+):\\s*(.*?)(?=SI|DEFECTO|$)";
-            Pattern casePattern = Pattern.compile(casePatternStr, Pattern.DOTALL);
-            Matcher caseMatcher = casePattern.matcher(casesBlock);
-
-            StringBuilder switchCode = new StringBuilder("switch(" + variable + ") {\n");
-
-            while (caseMatcher.find()) {
-                String caseValue = caseMatcher.group(1).trim();
-                String caseBody = caseMatcher.group(2).trim().replaceAll("\\n", "\n    ");
-                switchCode.append("    case ").append(caseValue).append(":\n        ").append(caseBody).append(";\n        break;\n");
+            if (line.startsWith("SEGUN")) {
+                // Convertir SEGUN a switch
+                stack.push("switch");
+                convertedCode.append("switch (").append(line.substring(6).replace(" HACER:", "")).append(") {\n");
+            } else if (line.startsWith("CAS")) {
+                // Convertir SI a case
+                convertedCode.append("case ").append(line.substring(3).replace(":", "")).append(":\n");
+                stack.push("case");
+            } else if (line.startsWith("DEFECTO")) {
+                // Convertir DEFECTO a default
+                convertedCode.append("default:\n");
+                stack.push("default");
+            } else if (line.startsWith("FIN SEGUN")) {
+            while (!stack.isEmpty() && !stack.peek().equals("switch")) {
+                String top = stack.pop();
+                if (top.equals("case") || top.equals("default")) {
+                    convertedCode.append("break;\n");
+                }
             }
-
-            Pattern defaultPattern = Pattern.compile("DEFECTO:\\s*(.*)", Pattern.DOTALL);
-            Matcher defaultMatcher = defaultPattern.matcher(casesBlock);
-            if (defaultMatcher.find()) {
-                String defaultBody = defaultMatcher.group(1).trim().replaceAll("\\n", "\n    ");
-                switchCode.append("    default:\n        ").append(defaultBody).append(";\n}");
-            } else {
-                switchCode.append("}");
+            if (!stack.isEmpty()) {
+                stack.pop();
             }
-
-            matcher.appendReplacement(sb, switchCode.toString());
+            convertedCode.append("}\n");
+        } else if (line.startsWith("FINCA")) {
+            String top = stack.pop();
+            if (top.equals("case") || top.equals("default")) {
+                convertedCode.append("break;\n");
+            }
+        } else {
+            convertedCode.append(line).append("\n");
         }
-
-        matcher.appendTail(sb);
-        return sb.toString();
     }
+    return convertedCode.toString();
+}
 
     
 }
