@@ -12,26 +12,26 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-public class VerificarFuncion {
+public class FunctionsUtils {
 
-    String[] dividirExpresion(String[] s) {
+    String[] splitExpresion(String[] s) {
         int i = 0;
-        List<String> nuevo = new ArrayList<>();
+        List<String> newString = new ArrayList<>();
 
         do {
             int old = i;
             
             if (!s[i].isBlank()) {
-                nuevo.add(s[i]);
+                newString.add(s[i]);
             }
 
             i++;
         } while (i < s.length);
 
-        return nuevo.toArray(new String[0]);
+        return newString.toArray(new String[0]);
     }
 
-    String tipos(String s) {
+    String types(String s) {
         if (Pattern.compile("ENTERO").matcher(s).find()) {
             return "int";
         }

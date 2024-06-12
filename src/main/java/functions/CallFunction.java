@@ -10,11 +10,11 @@ package functions;
 
 import java.util.List;
 
-public class LlamarFuncion {
+public class CallFunction {
 
-    public String llamar(String cadena, List<String> array) {
-        if (array.contains(cadena)) {
-            return cadena;
+    public String call(String chain, List<String> array) {
+        if (array.contains(chain)) {
+            return chain;
         } else {
             return "Syntax Error";
         }
