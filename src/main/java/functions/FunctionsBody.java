@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 public class FunctionsBody {
 
     private List<String> functionsNames = new ArrayList<>();
+    private static boolean mainFlag = false;
 
     public String body(String chain) {
         FunctionsUtils v = new FunctionsUtils();
@@ -55,9 +56,9 @@ public class FunctionsBody {
                     }
                     newValue.add("){\n");
 
-                    for (int j = 1; j < fullString.length; j++) {
-                        if (j == fullString.length - 1) {
-                            break;
+                    for (int j = 1; j < fullString.length - 1; j++) {
+                        if (Pattern.compile("FUNCION").matcher(fullString[j]).find()) {
+
                         }
                         if (Pattern.compile(bodyExpresion).matcher(fullString[j]).find()) {
                             splitChain = v.splitExpresion(fullString[j].trim().split(" "));
@@ -65,6 +66,10 @@ public class FunctionsBody {
                             for (int k = 0; k < splitChain.length; k++) {
                                 if (k == 0) {
                                     newValue.add("\t");
+                                }
+                                if (splitChain[k].equals("FUNCION")) {
+                                    newValue.add("Syntax Error");
+                                    continue;
                                 }
                                 if (splitChain[k].indexOf("(") == 0) {
                                     if (c.call(splitChain[k - 1], functionsNames).equals("Syntax Error")) {
@@ -81,9 +86,15 @@ public class FunctionsBody {
                                     }
                                 }
                                 if (v.checkReturn(splitChain[k])) {
-                                    returnFlag = true;
-                                    newValue.add("return ");
-                                    continue;
+                                    if (!flag) {
+                                        returnFlag = true;
+                                        newValue.add("return ");
+                                        continue;
+                                    } else {
+                                        newValue.add("Syntax Error");
+                                        break;
+                                    }
+
                                 }
                                 if (!returnFlag) {
                                     newValue.add(splitChain[k]);
@@ -105,7 +116,7 @@ public class FunctionsBody {
                     if (Pattern.compile(footerExpresion).matcher(fullString[fullString.length - 1]).find()) {
                         splitChain = v.splitExpresion(fullString[fullString.length - 1].trim().split(" "));
                         if (splitChain[splitChain.length - 1].equals("FUNCION")) {
-                            newValue.add("}\n");
+                            newValue.add("}");
                         } else {
                             return "Syntax Error";
                         }
@@ -115,7 +126,8 @@ public class FunctionsBody {
                     }
                 }
             } else if (splitChain[0].equals("INICIO")) {
-                newValue.add("int main(){\n");
+                newValue.add("\nint main(){\n");
+                mainFlag = true;
                 for (int j = 1; j < fullString.length; j++) {
                     if (j == fullString.length - 1) {
                         break;
@@ -126,6 +138,10 @@ public class FunctionsBody {
                         for (int k = 0; k < splitChain.length; k++) {
                             if (k == 0) {
                                 newValue.add("\t");
+                            }
+                            if (splitChain[k].equals("FUNCION")) {
+                                newValue.add("Syntax Error");
+                                continue;
                             }
                             if (splitChain[k].indexOf("(") == 0) {
                                 if (c.call(splitChain[k - 1], functionsNames).equals("Syntax Error")) {
@@ -166,7 +182,7 @@ public class FunctionsBody {
                 if (Pattern.compile(footerExpresion).matcher(fullString[fullString.length - 1]).find()) {
                     splitChain = v.splitExpresion(fullString[fullString.length - 1].trim().split(" "));
                     if (splitChain[splitChain.length - 1].equals("INICIO")) {
-                        newValue.add("}\n");
+                        newValue.add("}");
                     } else {
                         return "Syntax Error";
                     }
@@ -185,5 +201,9 @@ public class FunctionsBody {
 
     public List<String> getFunctionsNames() {
         return functionsNames;
+    }
+
+    public static boolean isMain() {
+        return mainFlag;
     }
 }

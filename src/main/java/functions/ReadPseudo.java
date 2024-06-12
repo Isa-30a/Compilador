@@ -7,25 +7,36 @@
  * Andrés Quintana
  */
 package functions;
-
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
+import java.util.Queue;
+import java.util.LinkedList;
 
 public class ReadPseudo {
-    public String readFile(String filePath) {
+
+    public void readFile(File file) {
+        BufferedReader br;
         StringBuilder pseudoCode = new StringBuilder();
         FunctionsUtils v = new FunctionsUtils();
         FunctionsBody fb = new FunctionsBody();
         FunctionsDeclaration fd = new FunctionsDeclaration();
         List<String> cppCode = new ArrayList<>();
+        Queue<String> declarationsQueue = new LinkedList<>();
+        Queue<String> bodiesQueue = new LinkedList<>();
+        String mainFunction = "";
         String beginExpresion = "\\s*(FUNCION\\s*(\\w|\\W)*|INICIO)\\s*";
         String endExpresion = "\\s*FIN (FUNCION|INICIO)\\s*";
         boolean flag = false;
-        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+
+        try {
+            br = new BufferedReader(new FileReader(file));
             String line;
             while ((line = br.readLine()) != null) {
                 pseudoCode.append(line).append("\n");
@@ -34,35 +45,60 @@ public class ReadPseudo {
             e.printStackTrace();
         }
         String[] fullPseudo = v.splitExpresion(pseudoCode.toString().trim().split("\\n"));
-        String pseudoBlock;
         int beginIndex = -1;
         int endIndex = -1;
-        for(int i = 0; i < fullPseudo.length; i++) {
-            System.out.println(fullPseudo[i]);
-            if(Pattern.compile(beginExpresion).matcher(fullPseudo[i]).find() && !flag) {
+        for (int i = 0; i < fullPseudo.length; i++) {
+            if (Pattern.compile(beginExpresion).matcher(fullPseudo[i]).find() && !flag) {
                 beginIndex = i;
                 flag = true;
             }
-            
-            if(Pattern.compile(endExpresion).matcher(fullPseudo[i]).find() && flag) {
+
+            if (Pattern.compile(endExpresion).matcher(fullPseudo[i]).find() && flag) {
                 endIndex = i;
                 flag = false;
-                //System.out.println("Code Block\n" + fd.declare(generatePseudoBlock(fullPseudo, beginIndex, endIndex), fb.getFunctionsNames()));
-                //System.out.println("\n" + fb.body(generatePseudoBlock(fullPseudo, beginIndex, endIndex)));
-                //fb.cuerpo(generatePseudoBlock(fullPseudo, beginIndex, endIndex));
+                if (Pattern.compile("\\s*(FUNCION\\s*(\\w|\\W)*)\\s*").matcher(fullPseudo[beginIndex]).find()) {
+                    declarationsQueue.offer(fd.declare(generatePseudoBlock(fullPseudo, beginIndex, endIndex), fb.getFunctionsNames()));
+                    bodiesQueue.offer(fb.body(generatePseudoBlock(fullPseudo, beginIndex, endIndex)));
+                } else {
+                    if(!fb.isMain()) {
+                        mainFunction = fb.body(generatePseudoBlock(fullPseudo, beginIndex, endIndex));
+                    } else {
+                        bodiesQueue.offer("Syntax Error");
+                    }
+                    
+                }
+            } else if (Pattern.compile(endExpresion).matcher(fullPseudo[i]).find()
+                    && !Pattern.compile(beginExpresion).matcher(fullPseudo[i]).find() && !flag) {
+                cppCode.add("Syntax Error");
             }
         }
+        while (!declarationsQueue.isEmpty()) {
+            cppCode.add(declarationsQueue.poll());
+        }
+        cppCode.add(mainFunction);
+        while (!bodiesQueue.isEmpty()) {
+            cppCode.add(bodiesQueue.poll());
+        }
+        String cppString = String.join("\n", cppCode.toArray(new String[0])).trim();
         
-        return pseudoCode.toString();
+        // Sobreescribir el archivo de entrada con el nuevo contenido
+        overwriteFile(file, cppString);
     }
-    
+
+    private void overwriteFile(File file, String cppString) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+            writer.write(cppString);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private String generatePseudoBlock(String[] fullPseudo, int beginIndex, int endIndex) {
         List<String> pseudoLines = new ArrayList<>();
-        for(int i = beginIndex; i <= endIndex; i++) {
+        for (int i = beginIndex; i <= endIndex; i++) {
             pseudoLines.add(fullPseudo[i]);
         }
         return String.join("\n", pseudoLines.toArray(new String[0])).trim();
     }
-    
-    
+
 }

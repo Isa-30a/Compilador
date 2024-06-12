@@ -8,12 +8,14 @@
  */
 package functions;
 
+import java.io.File;
+
 public class Main {
 
     public static void main(String[] args) {
         ReadPseudo reader = new ReadPseudo();
-        String filePath = "../pseudoFile.txt";
-        reader.readFile(filePath);
+        File file = new File("../pseudoFile.txt");
+        reader.readFile(file);
     }
 
 }
