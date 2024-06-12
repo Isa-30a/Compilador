@@ -6,7 +6,7 @@
  * Greison Castilla
  * Andrés Quintana
  */
-package functions;
+package compiladores.functions;
 
 public class Main {
 
