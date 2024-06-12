@@ -1,10 +1,10 @@
-SI (x > 0) ENTONCES
+SI (x > 0) ENTONCES:
     SEGUN variable HACER:
         CASO 1:
             print('Case 1')
-            SI (y > 0) ENTONCES
+            SI (y > 0) ENTONCES:
                 print('y is positive')
-            SINO
+            SINO:
                 print('y is not positive')
             FINSI
             TERMINAR
@@ -15,9 +15,9 @@ SI (x > 0) ENTONCES
                     print('Nested Case a')
                     SI (z == 0) ENTONCES
                         print('z is zero')
-                    SI (z > 0) ENTONCES
+                    SI (z > 0) ENTONCES:
                         print('z is positive')
-                    SINO
+                    SINO:
                         print('z is negative')
                     FINSI
                     TERMINAR
@@ -30,6 +30,6 @@ SI (x > 0) ENTONCES
             print('Default Case')
             TERMINAR
     FIN SEGUN
-SINO
+SINO:
     print('x is not positive')
 FINSI
