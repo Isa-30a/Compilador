@@ -85,6 +85,7 @@ public class FunctionsBody {
                                         break;
                                     }
                                 }
+
                                 if (v.checkReturn(splitChain[k])) {
                                     if (!flag) {
                                         returnFlag = true;
@@ -98,7 +99,11 @@ public class FunctionsBody {
                                 }
                                 if (!returnFlag) {
                                     newValue.add(splitChain[k]);
-                                    newValue.add(" ");
+                                    if (splitChain[k].charAt(splitChain[k].length() - 1) == ')' && k == splitChain.length - 1) {
+                                        newValue.add(";");
+                                    } else {
+                                        newValue.add(" ");
+                                    }
                                 } else {
                                     newValue.add(splitChain[k]);
                                     if (k == splitChain.length - 1) {
@@ -164,7 +169,11 @@ public class FunctionsBody {
                             }
                             if (!returnFlag) {
                                 newValue.add(splitChain[k]);
-                                newValue.add(" ");
+                                if (splitChain[k].charAt(splitChain[k].length() - 1) == ')' && k == splitChain.length - 1) {
+                                    newValue.add(";");
+                                } else {
+                                    newValue.add(" ");
+                                }
                             } else {
                                 newValue.add(splitChain[k]);
                                 if (k == splitChain.length - 1) {
