@@ -14,83 +14,136 @@ import java.util.regex.Pattern;
 
 public class CuerpoFuncion {
 
-    private boolean flag = false;
-
     public String cuerpo(String cadena) {
         VerificarFuncion v = new VerificarFuncion();
         boolean error = false;
-        String[] cadena_split = v.dividirExpresion(cadena.trim().split("[ (),\\n]"));
+        String headerExpresion = "\\s*(FUNCION(\\s+[a-zA-Z_][a-zA-Z0-9_]*\\s*)([(]((\\s*)|((\\s*)(BOOLEANO|ENTERO|FLOTANTE|CARACTER)\\s+[a-zA-Z_][a-zA-Z0-9_]*(\\s*\\[\\s*\\]\\s*|\\s*))((\\s*)[,](\\s*)((BOOLEANO|ENTERO|FLOTANTE|CARACTER)\\s+[a-zA-Z_][a-zA-Z0-9_]*(\\s*\\[\\s*\\]\\s*|\\s*)))*)(\\s*)[)])\\s*:\\s*(BOOLEANO|ENTERO|FLOTANTE|CARACTER|VACIO)\\s*)|(INICIO\\s*)";
+        String bodyExpresion = "(\\w|\\W)*|(RETORNA\\s+((([a-zA-Z_][a-zA-Z0-9_]*|[0-9]+)\\s*(\\s*([+]|[-]|[*]|[/]|[%])\\s*([a-zA-Z_][a-zA-Z0-9_]*|[0-9]+))*)\\s*))*";
+        String footerExpresion = "\\s*FIN (FUNCION|INICIO)\\s*";
+        String[] fullString = v.dividirExpresion(cadena.trim().split("\\n"));
         String result = "";
-        String expresion = "FUNCION\\s+(BOOLEANO|ENTERO|FLOTANTE|CARACTER|VACIO)(\\s+[a-zA-Z_][a-zA-Z0-9_]*\\s*)([(]((\\s*)|((\\s*)(BOOLEANO|ENTERO|FLOTANTE|CARACTER)\\s+[a-zA-Z_][a-zA-Z0-9_]*(\\s*\\[\\s*\\]\\s*|\\s*))((\\s*)[,](\\s*)((BOOLEANO|ENTERO|FLOTANTE|CARACTER)\\s+[a-zA-Z_][a-zA-Z0-9_]*(\\s*\\[\\s*\\]\\s*|\\s*)))*)(\\s*)[)])(\\s|\\n)+(RETORNA\\s+[a-zA-Z_][a-zA-Z0-9_]*(\\s|\\n)+)*FIN FUNCION";
+        String[] splitChain = null;
+        List<String> newValue = new ArrayList<>();
+        boolean flag = false;
+        boolean returnFlag = false;
 
-        if (Pattern.compile(expresion).matcher(cadena).find()) {
-            //si entra
-            if (cadena_split[0].equals("FUNCION")) {
-                cadena_split[0] = "";
-                for (int x = 0; x < cadena_split.length; x++) {
-                    error = v.checkEnd(cadena_split[x]);
-                }
-            }
-            if (!error) {
-                List<String> nuevo = new ArrayList<>();
-                flag = v.tipos(cadena_split[1]) == "void" ? true : false;
-                List<Integer> returnIndex = new ArrayList<>();
-                List<String> returnValue = new ArrayList<>();
-                for (int i = 0; i < cadena_split.length; i++) {
-                    if (i > 3 && i != cadena_split.length && v.isType(cadena_split[i])) {
-                        nuevo.add(", ");
-                    }
-                    if (cadena_split[i].equals("RETORNA")) {
-                        if (flag) {
-                            return "Syntax Error";
+        if (Pattern.compile(headerExpresion).matcher(fullString[0]).find()) {
+            splitChain = v.dividirExpresion(fullString[0].trim().split("[ (),]"));
+
+            if (splitChain[0].equals("FUNCION")) {
+                error = v.isType(splitChain[splitChain.length - 1]);
+                if (error) {
+                    flag = v.tipos(splitChain[splitChain.length - 1]) == "void" ? true : false;
+                    newValue.add(v.tipos(splitChain[splitChain.length - 1]));
+                    newValue.add(" ");
+                    newValue.add(splitChain[1] + "(");
+                    for (int i = 2; i < splitChain.length; i++) {
+                        if (i > 2 && i != splitChain.length && v.isType(splitChain[i])) {
+                            newValue.add(", ");
                         }
-                        returnIndex.add(i++);
-                        if (i == cadena_split.length - 1) {
-                            return "Syntax Error";
+                        newValue.add(v.tipos(splitChain[i]));
+                        if (v.isType(splitChain[i])) {
+                            newValue.add(" ");
+                        }
+                    }
+                    newValue.add("){\n");
+
+                    for (int j = 1; j < fullString.length; j++) {
+                        if (j == fullString.length - 1) {
+                            break;
+                        }
+                        if (Pattern.compile(bodyExpresion).matcher(fullString[j]).find()) {
+                            splitChain = v.dividirExpresion(fullString[j].trim().split(" "));
+                            for (int k = 0; k < splitChain.length; k++) {
+                                if (k == 0) {
+                                    newValue.add("\t");
+                                }
+                                if (v.checkReturn(splitChain[k])) {
+                                    returnFlag = true;
+                                    newValue.add("return ");
+                                    continue;
+                                }
+                                if (!returnFlag) {
+                                    newValue.add(splitChain[k]);
+                                    newValue.add(" ");
+                                } else {
+                                    newValue.add(splitChain[k]);
+                                    if (k == splitChain.length - 1) {
+                                        newValue.add(";");
+                                    } else {
+                                        newValue.add(" ");
+                                    }
+                                }
+                            }
+                            newValue.add("\n");
                         } else {
-                            returnValue.add(cadena_split[i]);
+                            return "Syntax Error";
                         }
-                        continue;
                     }
-                    if (v.checkEnd(cadena_split[i])) {
-                        break;
-                    }
+                    if (Pattern.compile(footerExpresion).matcher(fullString[fullString.length - 1]).find()) {
+                        splitChain = v.dividirExpresion(fullString[fullString.length - 1].trim().split(" "));
+                        if (splitChain[splitChain.length - 1].equals("FUNCION")) {
+                            newValue.add("}\n");
+                        } else {
+                            return "Syntax Error";
+                        }
 
-                    nuevo.add(v.tipos(cadena_split[i]));
-                    if (v.isType(cadena_split[i])) {
-                        nuevo.add(" ");
-                    }
-
-                    if (i == 2) {
-                        nuevo.add("(");
-                    }
-                }
-                for (int i = 0; i < returnIndex.size(); i++) {
-                    if (!flag && !cadena_split[returnIndex.get(i)].equals("RETORNA")) {
+                    } else {
                         return "Syntax Error";
                     }
                 }
-
-                if (flag) {
-                    nuevo.add(") {\n}");
-                } else {
-                    nuevo.add(") {");
-                    for (int i = 0; i < returnIndex.size(); i++) {
-                        nuevo.add("\n\treturn " + returnValue.get(i) + ";");
+            } else if (splitChain[0].equals("INICIO")) {
+                newValue.add("int main(){\n");
+                for (int j = 1; j < fullString.length; j++) {
+                    if (j == fullString.length - 1) {
+                        break;
                     }
-                    nuevo.add("\n}");
+                    if (Pattern.compile(bodyExpresion).matcher(fullString[j]).find()) {
+                        splitChain = v.dividirExpresion(fullString[j].trim().split(" "));
+                        
+                        for (int k = 0; k < splitChain.length; k++) {
+                            if (k == 0) {
+                                newValue.add("\t");
+                            }
+                            if (v.checkReturn(splitChain[k])) {
+                                returnFlag = true;
+                                newValue.add("return ");
+                                continue;
+                            }
+                            if (!returnFlag) {
+                                newValue.add(splitChain[k]);
+                                newValue.add(" ");
+                            } else {
+                                newValue.add(splitChain[k]);
+                                if (k == splitChain.length - 1) {
+                                    newValue.add(";");
+                                } else {
+                                    newValue.add(" ");
+                                }
+                            }
+                        }
+                        newValue.add("\n");
+                    } else {
+                        return "Syntax Error";
+                    }
                 }
+                if (Pattern.compile(footerExpresion).matcher(fullString[fullString.length - 1]).find()) {
+                    splitChain = v.dividirExpresion(fullString[fullString.length - 1].trim().split(" "));
+                    if (splitChain[splitChain.length - 1].equals("INICIO")) {
+                        newValue.add("}\n");
+                    } else {
+                        return "Syntax Error";
+                    }
 
-                cadena_split = nuevo.toArray(new String[0]);
-                result = String.join("", cadena_split).trim();
-                return result;
-
-            } else {
-                return "Syntax Error";
+                } else {
+                    return "Syntax Error";
+                }
             }
+            splitChain = newValue.toArray(new String[0]);
+            result = String.join("", splitChain).trim();
+            return result;
         } else {
             return "Syntax Error";
         }
     }
-
 }
