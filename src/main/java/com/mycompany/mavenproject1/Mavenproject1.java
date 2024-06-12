@@ -4,7 +4,15 @@
  */
 package com.mycompany.mavenproject1;
 
+import java.awt.event.WindowListener;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import javax.swing.BoxLayout;
+
+import org.example.Acciones;
 
 /**
  *
@@ -88,6 +96,7 @@ public class Mavenproject1 extends javax.swing.JFrame {
         jMenu1.setText("File");
         jMenu1.setIconTextGap(0);
         jMenu1.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jMenu1MouseClicked(evt);
             }
@@ -97,6 +106,7 @@ public class Mavenproject1 extends javax.swing.JFrame {
         jMenuItem1.setText("Abrir Archivo");
         jMenuItem1.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
         jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem1ActionPerformed(evt);
             }
@@ -107,6 +117,7 @@ public class Mavenproject1 extends javax.swing.JFrame {
         jMenuItem2.setText("Guardar Archivo");
         jMenuItem2.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
         jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem2ActionPerformed(evt);
             }
@@ -123,12 +134,24 @@ public class Mavenproject1 extends javax.swing.JFrame {
         jMenuItem3.setText("Compilar");
         jMenuItem3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jMenuItem3.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
+        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem3ActionPerformed(evt);
+            }
+        });
         jMenu3.add(jMenuItem3);
 
         jMenuItem4.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         jMenuItem4.setText("Ejecutar");
         jMenuItem4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jMenuItem4.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
+        jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem4ActionPerformed(evt);
+            }
+        });
         jMenu3.add(jMenuItem4);
 
         jMenuBar1.add(jMenu3);
@@ -157,11 +180,22 @@ public class Mavenproject1 extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenu1MouseClicked
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        // TODO add your handling code here:
+        Acciones.abrirArchivo();
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
-        // TODO add your handling code here:
+        Acciones.guardar(obtenerArchivo());
+    }//GEN-LAST:event_jMenuItem2ActionPerformed
+
+    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        Acciones.compilar(obtenerArchivo());
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
+
+    private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+        // coloque obtener archivo, pero me tienen que enviar el archivo compilado en la opcion 3
+        // mira la clase de acciones para mas informacion al respecto
+        // att. Nestor
+        Acciones.ejecutar(obtenerArchivo());
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     /**
@@ -194,6 +228,7 @@ public class Mavenproject1 extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 Mavenproject1 window = new Mavenproject1();
                 window.setVisible(true);
@@ -219,4 +254,22 @@ public class Mavenproject1 extends javax.swing.JFrame {
     private javax.swing.JTextArea jTextArea2;
     // End of variables declaration//GEN-END:variables
 
+    private File obtenerArchivo()
+    {
+        try 
+        {
+            String codigo = jTextArea1.getText();
+            File tempFile = File.createTempFile("codigo", ".txt");
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile)))
+            {
+                writer.write(codigo);
+                return tempFile;
+            }
+        } 
+        catch (IOException ex) 
+        {
+            System.out.println(ex);
+            return null;
+        }
+    }
 }
