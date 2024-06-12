@@ -202,44 +202,49 @@ public class IfElseConverter {
         // Pila para manejar el contexto de los bloques
         Stack<String> stack = new Stack<>();
         StringBuilder convertedCode = new StringBuilder();
-
+    
         for (String line : lines) {
             line = line.trim();
-
+    
             if (line.startsWith("SEGUN")) {
                 // Convertir SEGUN a switch
                 stack.push("switch");
                 convertedCode.append("switch (").append(line.substring(6).replace(" HACER:", "")).append(") {\n");
-            } else if (line.startsWith("CAS")) {
-                // Convertir SI a case
-                convertedCode.append("case ").append(line.substring(3).replace(":", "")).append(":\n");
+            } else if (line.startsWith("CASO")) {
+                // Convertir CASO a case
+                convertedCode.append("case ").append(line.substring(5).replace(":", "")).append(":\n");
                 stack.push("case");
             } else if (line.startsWith("DEFECTO")) {
                 // Convertir DEFECTO a default
                 convertedCode.append("default:\n");
                 stack.push("default");
             } else if (line.startsWith("FIN SEGUN")) {
-            while (!stack.isEmpty() && !stack.peek().equals("switch")) {
-                String top = stack.pop();
-                if (top.equals("case") || top.equals("default")) {
-                    convertedCode.append("break;\n");
+                // Convertir FIN SEGUN a }
+                while (!stack.isEmpty() && !stack.peek().equals("switch")) {
+                    String top = stack.pop();
+                    if (top.equals("case") || top.equals("default")) {
+                        convertedCode.append("break;\n");
+                    }
                 }
+                if (!stack.isEmpty()) {
+                    stack.pop();
+                }
+                convertedCode.append("}\n");
+            } else if (line.startsWith("TERMINAR")) {
+                // Convertir TERMINAR a break;
+                if (!stack.isEmpty()) {
+                    String top = stack.pop();
+                    if (top.equals("case") || top.equals("default")) {
+                        convertedCode.append("break;\n");
+                    }
+                }
+            } else {
+                // Agregar línea de código
+                convertedCode.append(line).append("\n");
             }
-            if (!stack.isEmpty()) {
-                stack.pop();
-            }
-            convertedCode.append("}\n");
-        } else if (line.startsWith("FINCA")) {
-            String top = stack.pop();
-            if (top.equals("case") || top.equals("default")) {
-                convertedCode.append("break;\n");
-            }
-        } else {
-            convertedCode.append(line).append("\n");
         }
+        return convertedCode.toString();
     }
-    return convertedCode.toString();
-}
 
     
 }
