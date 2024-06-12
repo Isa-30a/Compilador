@@ -1,0 +1,32 @@
+SI (10>=20) ENTONCES:
+    SI (variable Y CONSTANTE O def) ENTONCES:
+        SI(pepe O wasa) ENTONCES:
+            var = 10
+        SINO:
+            n = FALSO
+        FINSI
+    FINSI
+FINSI        
+FUNCION (numero >= 3) ENTONCES:
+numero = 3
+FINFUNCION
+numero = NULL
+SI (num != 4) ENTONCES:
+FUNCION func (BOOLEANO bool) ENTONCES:
+num=8
+FINFUNCION
+SINO:
+num=8 
+FINSI
+SI (edad == 2) ENTONCES: 
+numero = numero + 1
+SINO (edad >= 18 Y edad < 65) ENTONCES:
+numero = 4
+SINO (edad >= 65 < 80) ENTONCES:
+numero = 5
+SINO (edad >= 80) ENTONCES:
+numero = 5
+numero = 5
+SINO:
+numero = 7
+FINSI

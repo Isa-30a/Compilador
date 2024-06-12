@@ -1,0 +1,5 @@
+SI (num != 4) ENTONCES:
+num=8
+SINO:
+num=8 
+FINSI

@@ -1,0 +1,35 @@
+SI (x > 0) ENTONCES:
+    SEGUN variable HACER:
+        CASO 1:
+            print('Case 1')
+            SI (y > 0) ENTONCES:
+                print('y is positive')
+            SINO:
+                print('y is not positive')
+            FINSI
+            TERMINAR
+        CASO 2:
+            print('Case 2')
+            SEGUN nestedVar HACER:
+                CASO 'a':
+                    print('Nested Case a')
+                    SI (z == 0) ENTONCES
+                        print('z is zero')
+                    SI (z > 0) ENTONCES:
+                        print('z is positive')
+                    SINO:
+                        print('z is negative')
+                    FINSI
+                    TERMINAR
+                DEFECTO:
+                    print('Nested Default Case')
+                    TERMINAR
+            FIN SEGUN
+            TERMINAR
+        DEFECTO:
+            print('Default Case')
+            TERMINAR
+    FIN SEGUN
+SINO:
+    print('x is not positive')
+FINSI
