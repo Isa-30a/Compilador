@@ -1,62 +1,104 @@
-
 package compiladores.DeclarationAndAssignment.translatorDeclarationAssignment;
 
 import compiladores.DeclarationAndAssignment.machines.afds.*;
 import compiladores.DeclarationAndAssignment.machines.turingMachines.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PseudocodeTranslator {
 
     private Afd_DeclarationAndAssignment afdDeclarationAssignment;
+    private Afd_DecWithAssignOperations afdDecWithAssignOperations;
+    private Afd_AssignOperations afdAssignOperations;
     private Afd_Declaration afdDeclaration;
     private Afd_Assignment afdAssignment;
-    private Afd_AssignOperations afdAssignOperations;
-    private Afd_DecWithAssignOperations afdDecWithAssignOperations;
 
-    private TuringMachineAssignment turingAssignment;
-    private TuringMachineDeclaration turingDeclaration;
     private TuringMachineDeclarationAndAssignment turingDeclarationAssignment;
-    private TuringMachineAssignOperations turingAssignOperations;
     private TuringMachineDecWithAssignOperations turingDecWithAssignOperations;
+    private TuringMachineAssignOperations turingAssignOperations;
+    private TuringMachineDeclaration turingDeclaration;
+    private TuringMachineAssignment turingAssignment;
 
     public PseudocodeTranslator() {
         this.afdDeclarationAssignment = new Afd_DeclarationAndAssignment();
+        this.afdDecWithAssignOperations = new Afd_DecWithAssignOperations();
+        this.afdAssignOperations = new Afd_AssignOperations();
         this.afdDeclaration = new Afd_Declaration();
         this.afdAssignment = new Afd_Assignment();
-        this.afdAssignOperations = new Afd_AssignOperations();
-        this.afdDecWithAssignOperations = new Afd_DecWithAssignOperations();
 
-        this.turingAssignment = new TuringMachineAssignment();
-        this.turingDeclaration = new TuringMachineDeclaration();
         this.turingDeclarationAssignment = new TuringMachineDeclarationAndAssignment();
-        this.turingAssignOperations = new TuringMachineAssignOperations();
         this.turingDecWithAssignOperations = new TuringMachineDecWithAssignOperations();
+        this.turingAssignOperations = new TuringMachineAssignOperations();
+        this.turingDeclaration = new TuringMachineDeclaration();
+        this.turingAssignment = new TuringMachineAssignment();
     }
 
-    public String translate(String pseudocode) {
-        if (pseudocode.trim().isEmpty()) {
-            // Si la cadena de pseudocódigo está vacía
+    public String translate(String toCompile) {
+        if (toCompile.trim().isEmpty()) {
+            // Si la entrada está vacía
             return "La entrada está vacía.";
         }
 
-        if (afdDeclarationAssignment.isValidDeclarationAssignment(pseudocode)) {
-            // Caso de declaración y asignación simultánea con operaciones
-            return turingDecWithAssignOperations.translateDeclarationAndAssignment(pseudocode);
-        } else if (afdDeclaration.isValidDeclaration(pseudocode)) {
-            // Caso de declaración simple
-            return turingDeclaration.translateDeclaration(pseudocode);
-        } else if (afdAssignment.isValidAssignment(pseudocode)) {
-            // Caso de asignación simple
-            return turingAssignment.translateAssignment(pseudocode);
-        } else if (afdAssignOperations.isValidAssignment(pseudocode)) {
-            // Caso de asignación con operaciones
-            return turingAssignOperations.translateAssignment(pseudocode);
-        } else if (afdDecWithAssignOperations.isValidDeclarationWithAssignment(pseudocode)) {
-            // Caso de declaración con asignación y operaciones
-            return turingDecWithAssignOperations.translateDeclarationAndAssignment(pseudocode);
-        } else {
-            // Caso no válido
-            return "El pseudocódigo no es válido.";
+        // Dividir el pseudocódigo en líneas
+        String[] lines = toCompile.split("\n");
+        List<String> translatedLines = new ArrayList<>();
+
+        // Iterar sobre cada línea
+        for (String line : lines) {
+            // Dividir la línea en segmentos basados en espacios
+            String[] segments = line.trim().split("\\s+");
+
+            // Traducir cada segmento y reconstruir la línea
+            StringBuilder translatedLine = new StringBuilder();
+            for (String segment : segments) {
+                String translatedSegment = translateSegment(segment.trim());
+                translatedLine.append(translatedSegment).append(" ");
+            }
+
+            // Agregar la línea traducida al resultado final
+            translatedLines.add(translatedLine.toString().trim());
         }
+
+        // Reconstruir el pseudocódigo traducido
+        StringBuilder result = new StringBuilder();
+        for (String translatedLine : translatedLines) {
+            result.append(translatedLine).append("\n");
+        }
+
+        return result.toString();
+    }
+
+    private String translateSegment(String segment) {
+        // Verificar si es una declaración
+        if (isDeclaration(segment)) {
+            return turingDeclaration.translateDeclaration(segment);
+        }
+
+        // Verificar si es una asignación
+        if (segment.contains("=") && segment.indexOf("=") == segment.lastIndexOf("=")) {
+            return turingAssignment.translateAssignment(segment);
+        }
+
+        // Verificar si es una declaración con asignación
+        if (afdDecWithAssignOperations.isValidDeclarationWithAssignment(segment)) {
+            return turingDecWithAssignOperations.translateDeclarationAndAssignment(segment);
+        }
+
+        // Verificar si es una asignación simple
+        if (afdAssignOperations.isValidAssignment(segment)) {
+            return turingAssignOperations.translateAssignment(segment);
+        }
+
+        // Si no es ninguna de las anteriores, devolver el segmento sin cambios
+        return segment;
+    }
+
+    private boolean isDeclaration(String segment) {
+        // Verificar si el segmento es una declaración válida según las reglas especificadas
+        // Debe comenzar con un tipo de dato en español y en mayúsculas
+        // Puede tener dimensiones de arreglo como [] o [numero]
+        return afdDeclaration.isValidDeclaration(segment);
     }
 }
-//status interconection prueba 2.0
+
