@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 import java.util.Queue;
 import java.util.LinkedList;
 
-public class Compile {
+public class FunctionsCompiler {
     public String pseudoToCpp(String pseudoCode) {
         FunctionsUtils v = new FunctionsUtils();
         FunctionsBody fb = new FunctionsBody();
