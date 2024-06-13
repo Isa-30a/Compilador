@@ -34,9 +34,7 @@ public class Compile {
             if (Pattern.compile(beginExpresion).matcher(fullPseudo[i]).find() && !flag) {
                 beginIndex = i;
                 flag = true;
-            }
-
-            if (Pattern.compile(endExpresion).matcher(fullPseudo[i]).find() && flag) {
+            } else if (Pattern.compile(endExpresion).matcher(fullPseudo[i]).find() && flag) {
                 endIndex = i;
                 flag = false;
                 if (Pattern.compile("\\s*(FUNCION\\s*(\\w|\\W)*)\\s*").matcher(fullPseudo[beginIndex]).find()) {
@@ -53,6 +51,8 @@ public class Compile {
             } else if (Pattern.compile(endExpresion).matcher(fullPseudo[i]).find()
                     && !Pattern.compile(beginExpresion).matcher(fullPseudo[i]).find() && !flag) {
                 cppCode.add("Syntax Error");
+            } else if(!flag) {
+                cppCode.add(fullPseudo[i]);
             }
         }
         while (!declarationsQueue.isEmpty()) {
