@@ -172,11 +172,12 @@ public class Acciones {
                 builder.append(linea + '\n');
             }
             toComplie = functionsComplier.pseudoToCpp(builder.toString());
-            toComplie = IfElseConverter.convertSwitchCase(toComplie);
-            toComplie = IfElseConverter.convertToCpp(toComplie);
-            toComplie = LogicalOperators.convertToCpp(toComplie);
-            toComplie = ciclesCompiler.convertToCpp(toComplie);
+            // toComplie = IfElseConverter.convertSwitchCase(toComplie);
+            // toComplie = IfElseConverter.convertToCpp(toComplie);
+            // toComplie = LogicalOperators.convertToCpp(toComplie);
+            // toComplie = ciclesCompiler.convertToCpp(toComplie);
             System.out.println(toComplie);
+            Mavenproject1.jTextArea2.setText(toComplie);
         }catch (IOException exception){
             JOptionPane.showMessageDialog(null, "Error al traducir el archivo: " + exception.getMessage());
         }
