@@ -3,8 +3,17 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.JTextArea;
+
+import compiladores.functions.FunctionsCompiler;
+import compiladores.ciclos.PseudocodeProcessorCiclos;
+import compiladores.condicionales.IfElseConverter;
+import compiladores.condicionales.LogicalOperators;
 
 public class Acciones {
 
@@ -34,12 +43,28 @@ public class Acciones {
         // para volverlo un .tovar y guardarlo en la maquina del usuario
         // Aqui tienes una funcion para verificar que toma el input del usuario bien
         // att. Nestor
+
+        //guardar listo 
+        //att. Mario
         try (BufferedReader reader = new BufferedReader(new FileReader(TempFile))) 
         {
+            JFileChooser fileChooser = new JFileChooser();
             String linea;
-            while ((linea = reader.readLine()) != null) 
-            {
-                System.out.println(linea);
+            fileChooser.setDialogTitle("Seleccione la ubicación del archivo de salida");
+            int userSelection = fileChooser.showSaveDialog(null);
+            if (userSelection == JFileChooser.APPROVE_OPTION) {
+                File outputFile = fileChooser.getSelectedFile();
+                try {
+                    StringBuilder content = new StringBuilder();
+                    while ((linea = reader.readLine()) != null){
+                        content.append(linea + '\n');
+                    }
+                    Files.write(Paths.get(outputFile.getAbsolutePath()), content.toString().getBytes());
+                    JOptionPane.showMessageDialog(null, "Archivo guardado en: " +outputFile.getAbsolutePath());
+                } catch (IOException e) {
+                    JOptionPane.showMessageDialog(null, "Error al leer o escribir los archivos: " + e.getMessage());
+                }
+            
             }
         } 
         catch (IOException ex) 
@@ -48,29 +73,38 @@ public class Acciones {
         }
     }
 
-    public static void abrirArchivo()
+    public static void abrirArchivo(JTextArea area)
     {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setFileFilter(new javax.swing.filechooser.FileFilter() {
             @Override
             public boolean accept(File f) 
             {
-                return f.isDirectory() || f.getName().toLowerCase().endsWith(".txt");
+                return f.isDirectory() || f.getName().toLowerCase().endsWith(".tovar");
             }
             @Override
             public String getDescription() 
             {
-                return "Archivos de texto (*.txt)";
+                return "Archivos de texto (*.tovar)";
             }
         });
         int result = fileChooser.showOpenDialog(null);
+        
         if (result == JFileChooser.APPROVE_OPTION) 
         {
             File archivo = fileChooser.getSelectedFile();
+            String line;
+            try(BufferedReader reader = new BufferedReader(new FileReader(archivo))){
+                while ((line = reader.readLine()) != null){
+                    area.setText(area.getText() + line + '\n');
+                }
+            }catch (IOException exception){
+                JOptionPane.showMessageDialog(null, "Error al leer el archivo: " + exception.getMessage());
+            }
         } 
         else 
         {
-            System.out.println("No se seleccionó ningún archivo.");
+            JOptionPane.showMessageDialog(null, "No se seleccionó ningún archivo.");
         }
 
         // Aqui aplicale toda la logica para extraer todo el contenido
@@ -79,6 +113,10 @@ public class Acciones {
         // Para cuando hagas el .tovar y pasarlo a txt
         // Cualquier cosa que puedas necesitar me haces saber
         // att. Nestor
+        
+
+        //Abrir listo
+        //att. Mario
     }
 
     public static void compilar(File TempFile)
@@ -89,5 +127,28 @@ public class Acciones {
         // El metodo ejecutar va a compilar en c++ el archivo .txt que le pases
         // Para que funcione mi metodo solo mandale el archivo que aqui generaste
         // att. Nestor
+        try(BufferedReader reader = new BufferedReader(new FileReader(TempFile))){
+            StringBuilder builder = new StringBuilder();
+            FunctionsCompiler functionsComplier = new FunctionsCompiler();
+            PseudocodeProcessorCiclos ciclesCompiler = new PseudocodeProcessorCiclos();
+            //IfElseConverter conditionalStructuresCompiler = new IfElseConverter();
+            //LogicalOperators logicalOperatorsCompiler = new LogicalOperators();
+            String linea;
+            String toComplie;
+            while((linea = reader.readLine()) != null){
+                builder.append(linea + '\n');
+            }
+            toComplie = functionsComplier.pseudoToCpp(builder.toString());
+            toComplie = IfElseConverter.convertSwitchCase(toComplie);
+            toComplie = IfElseConverter.convertToCpp(toComplie);
+            toComplie = LogicalOperators.convertToCpp(toComplie);
+            toComplie = ciclesCompiler.convertToCpp(toComplie);
+            System.out.println(toComplie);
+        }catch (IOException exception){
+            JOptionPane.showMessageDialog(null, "Error al traducir el archivo: " + exception.getMessage());
+        }
+        
+
+
     }
 }
