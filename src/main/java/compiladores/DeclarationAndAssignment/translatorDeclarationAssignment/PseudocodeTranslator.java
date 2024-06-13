@@ -21,6 +21,7 @@ public class PseudocodeTranslator {
     private TuringMachineAssignment turingAssignment;
 
     public PseudocodeTranslator() {
+        // Inicialización de las máquinas y autómatas
         this.afdDeclarationAssignment = new Afd_DeclarationAndAssignment();
         this.afdDecWithAssignOperations = new Afd_DecWithAssignOperations();
         this.afdAssignOperations = new Afd_AssignOperations();
@@ -46,14 +47,25 @@ public class PseudocodeTranslator {
 
         // Iterar sobre cada línea
         for (String line : lines) {
-            // Dividir la línea en segmentos basados en espacios
-            String[] segments = line.trim().split("\\s+");
-
-            // Traducir cada segmento y reconstruir la línea
             StringBuilder translatedLine = new StringBuilder();
-            for (String segment : segments) {
-                String translatedSegment = translateSegment(segment.trim());
-                translatedLine.append(translatedSegment).append(" ");
+            int index = 0;
+
+            while (index < line.length()) {
+                String remainingLine = line.substring(index).trim();
+                String block = findNextBlock(remainingLine);
+                if (!block.isEmpty()) {
+                    // Agregar el texto anterior al bloque encontrado
+                    translatedLine.append(line, index, line.indexOf(block, index)).append(" ");
+
+                    // Traducir el bloque encontrado
+                    String translatedBlock = translateSegment(block.trim());
+                    translatedLine.append(translatedBlock).append(" ");
+                    index += remainingLine.indexOf(block) + block.length();
+                } else {
+                    // Si no se encontró un bloque, agregar el resto de la línea sin cambios
+                    translatedLine.append(line.substring(index));
+                    break;
+                }
             }
 
             // Agregar la línea traducida al resultado final
@@ -69,35 +81,48 @@ public class PseudocodeTranslator {
         return result.toString();
     }
 
+    private String findNextBlock(String line) {
+        // Buscar y devolver el próximo bloque que coincida con alguno de los AFDs
+        for (int i = 0; i < line.length(); i++) {
+            String substring = line.substring(0, i + 1).trim();
+            if (afdDeclarationAssignment.isValidDeclarationAssignment(substring) ||
+                afdDecWithAssignOperations.isValidDeclarationWithAssignment(substring) ||
+                afdAssignOperations.isValidAssignment(substring) ||
+                afdDeclaration.isValidDeclaration(substring) ||
+                afdAssignment.isValidAssignment(substring)) {
+                return substring;
+            }
+        }
+        return "";
+    }
+
     private String translateSegment(String segment) {
-        // Verificar si es una declaración
-        if (isDeclaration(segment)) {
+        // Verificar si es una declaración con asignación
+        if (afdDeclarationAssignment.isValidDeclarationAssignment(segment)) {
+            return turingDeclarationAssignment.translateDeclarationAndAssignment(segment);
+        }
+
+        // Verificar si es una declaración sola
+        if (afdDeclaration.isValidDeclaration(segment)) {
             return turingDeclaration.translateDeclaration(segment);
         }
 
-        // Verificar si es una asignación
-        if (segment.contains("=") && segment.indexOf("=") == segment.lastIndexOf("=")) {
+        // Verificar si es una asignación sola
+        if (afdAssignment.isValidAssignment(segment)) {
             return turingAssignment.translateAssignment(segment);
         }
 
-        // Verificar si es una declaración con asignación
+        // Verificar si es una declaración con operaciones de asignación
         if (afdDecWithAssignOperations.isValidDeclarationWithAssignment(segment)) {
             return turingDecWithAssignOperations.translateDeclarationAndAssignment(segment);
         }
 
-        // Verificar si es una asignación simple
+        // Verificar si es una operación de asignación
         if (afdAssignOperations.isValidAssignment(segment)) {
             return turingAssignOperations.translateAssignment(segment);
         }
 
         // Si no es ninguna de las anteriores, devolver el segmento sin cambios
         return segment;
-    }
-
-    private boolean isDeclaration(String segment) {
-        // Verificar si el segmento es una declaración válida según las reglas especificadas
-        // Debe comenzar con un tipo de dato en español y en mayúsculas
-        // Puede tener dimensiones de arreglo como [] o [numero]
-        return afdDeclaration.isValidDeclaration(segment);
     }
 }
