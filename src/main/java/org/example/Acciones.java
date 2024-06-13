@@ -8,6 +8,7 @@ import java.nio.file.Paths;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.JTextArea;
 
 public class Acciones {
 
@@ -67,29 +68,38 @@ public class Acciones {
         }
     }
 
-    public static void abrirArchivo()
+    public static void abrirArchivo(JTextArea area)
     {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setFileFilter(new javax.swing.filechooser.FileFilter() {
             @Override
             public boolean accept(File f) 
             {
-                return f.isDirectory() || f.getName().toLowerCase().endsWith(".txt");
+                return f.isDirectory() || f.getName().toLowerCase().endsWith(".tovar");
             }
             @Override
             public String getDescription() 
             {
-                return "Archivos de texto (*.txt)";
+                return "Archivos de texto (*.tovar)";
             }
         });
         int result = fileChooser.showOpenDialog(null);
+        
         if (result == JFileChooser.APPROVE_OPTION) 
         {
             File archivo = fileChooser.getSelectedFile();
+            String line;
+            try(BufferedReader reader = new BufferedReader(new FileReader(archivo))){
+                while ((line = reader.readLine()) != null){
+                    area.setText(area.getText() + line + '\n');
+                }
+            }catch (IOException exception){
+                JOptionPane.showMessageDialog(null, "Error al leer el archivo: " + exception.getMessage());
+            }
         } 
         else 
         {
-            System.out.println("No se seleccionó ningún archivo.");
+            JOptionPane.showMessageDialog(null, "No se seleccionó ningún archivo.");
         }
 
         // Aqui aplicale toda la logica para extraer todo el contenido
@@ -98,6 +108,10 @@ public class Acciones {
         // Para cuando hagas el .tovar y pasarlo a txt
         // Cualquier cosa que puedas necesitar me haces saber
         // att. Nestor
+        
+
+        //Abrir listo
+        //att. Mario
     }
 
     public static void compilar(File TempFile)
