@@ -44,9 +44,3 @@ public class TuringMachineDeclaration {
         return typeTranslationMap.getOrDefault(baseType, "Error de traducción");
     }
 }
-
-
-
-
-
-
