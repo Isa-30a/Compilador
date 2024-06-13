@@ -14,7 +14,7 @@ First you need to have the Java extension for VS and JDK 21 installed.
 	 After that, close VS and delete the folder called repository in:
 			C:\User\User\.m2
 	 
-	Open this project and press again `CTRL + Shift + P`, type and select `Maven: Run Commands` -> `build`.
+	Open this project and press again `CTRL + Shift + P`, type and select `Maven: Run Commands` -> `compile`.
 	 
 3. **Enjoy**
 	You can use the command `mvn exec:java` for execution or press the button in the user interface.
