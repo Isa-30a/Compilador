@@ -4,8 +4,12 @@
  */
 package com.mycompany.mavenproject1;
 
+import java.awt.Color;
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.Insets;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -13,10 +17,13 @@ import java.io.IOException;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
+import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 
 import org.example.Acciones;
@@ -42,6 +49,29 @@ public class Mavenproject1 extends javax.swing.JFrame {
     
 
     private void initDesign() {
+
+         // Obtener la ruta del archivo de icono
+         String iconPath = new File("").getAbsolutePath() + "/resources/img/lambda.png";
+         File iconFile = new File(iconPath);
+         
+         // Verificar si el archivo de icono existe
+         if (iconFile.exists()) {
+            
+            ImageIcon originalIcon = new ImageIcon(iconPath);
+            Image image = originalIcon.getImage();
+
+            // Escalar la imagen a un tamaño adecuado (ejemplo: 64x64)
+            Image scaledImage = image.getScaledInstance(64, 64, Image.SCALE_SMOOTH);
+
+            // Crear un ImageIcon a partir de la imagen escalada
+            ImageIcon icon = new ImageIcon(scaledImage);
+             // Establecer el icono del JFrame
+             setIconImage(icon.getImage());
+         } else {
+             System.err.println("No se pudo encontrar el archivo de icono: " + iconPath);
+         }
+
+
         Font font = getFont();
         try {
             font = new Font("SF Pro", Font.PLAIN, 12);
@@ -69,6 +99,7 @@ public class Mavenproject1 extends javax.swing.JFrame {
         jMenuBar1.add(archive);
         archive.setFont(new Font("SF Pro", Font.PLAIN, 13));
         archive.setEnabled(false);
+
     }
 
 
@@ -97,7 +128,6 @@ public class Mavenproject1 extends javax.swing.JFrame {
         setTitle("Compilador");
         setLocationByPlatform(true);
 
-
         jTextPane2 = new LiveKeywordHighlighter();
         jTextPane1 = new LiveKeywordHighlighter();
      
@@ -110,6 +140,7 @@ public class Mavenproject1 extends javax.swing.JFrame {
         // jTextPane1.setLineWrap(true);
         // jTextPane1.setRows(5);
         jScrollPane1.setRowHeaderView(linea);
+        // jScrollPane1.setViewportView(jTextPane1);
         jScrollPane1.setViewportView(jTextPane1);
         
 
@@ -120,6 +151,7 @@ public class Mavenproject1 extends javax.swing.JFrame {
         // jTextPane2.setWrapStyleWord(true);
         jTextPane2.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
         jScrollPane3.setViewportView(jTextPane2);
+
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -141,6 +173,55 @@ public class Mavenproject1 extends javax.swing.JFrame {
                     .addComponent(jScrollPane1))
                 .addContainerGap())
         );
+
+        JLabel labelPseudo = new JLabel("Pseudo");
+        JLabel labelCpp = new JLabel("C++");
+
+        labelCpp.setLayout(null);
+        labelCpp.setOpaque(true);
+        labelCpp.setForeground(new Color(255,255,255));
+        labelCpp.setBackground(new Color(0,0,0,80));
+        jTextPane2.add(labelCpp);
+
+        labelPseudo.setLayout(null);
+        labelPseudo.setOpaque(true);
+        // labelPseudo.setBackground(Color.RED);
+        labelPseudo.setForeground(new Color(255,255,255));
+        labelPseudo.setBackground(new Color(0,0,0,80));
+       
+        jTextPane1.add(labelPseudo);
+
+        try {
+            Font font = new Font("SF Pro", Font.BOLD, 14);
+            labelCpp.setFont(font);
+            labelPseudo.setFont(font);
+        } catch (Exception e) {
+        
+        }
+
+        // labelCpp.setBounds((int)(jPanel1.getPreferredSize().getWidth()/2)-200,jPanel1.getHeight(), 100,100);
+        labelCpp.setHorizontalAlignment(SwingConstants.CENTER);
+        labelPseudo.setHorizontalAlignment(SwingConstants.CENTER);
+
+        jPanel1.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                // Obtener el tamaño actual del panel
+                int panelWidth = (int)jPanel1.getWidth();
+                int panelHeight = 0;
+
+                // Calcular la posición del labelCpp
+                int labelWidth = 100; // Ancho del JLabel
+                int labelHeight = 20; // Alto del JLabel
+                int labelX = (panelWidth / 2) - 145; // Centrado horizontal
+                int labelX2 = (panelWidth / 2) - 180; // Centrado horizontal
+                int labelY = 0; // 10 píxeles de margen desde abajo
+
+                // Establecer la posición del JLabel
+                labelCpp.setBounds(labelX, labelY, labelWidth, labelHeight);
+                labelPseudo.setBounds(labelX2,labelY,labelWidth,labelHeight);
+            }
+        });
 
         jScrollPane2.setViewportView(jPanel1);
 
