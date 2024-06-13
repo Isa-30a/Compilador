@@ -263,12 +263,22 @@ public class Mavenproject1 extends javax.swing.JFrame {
         jMenuItem3.setText("Compilar");
         jMenuItem3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jMenuItem3.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
+        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem3ActionPerformed(evt);
+            }
+        });
         jMenu3.add(jMenuItem3);
 
         jMenuItem4.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         jMenuItem4.setText("Ejecutar");
         jMenuItem4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jMenuItem4.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
+        jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem4ActionPerformed(evt);
+            }
+        });
         jMenu3.add(jMenuItem4);
 
         jMenuBar1.add(jMenu3);
@@ -309,9 +319,7 @@ public class Mavenproject1 extends javax.swing.JFrame {
     }                                          
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        System.out.println(jTextPane1.getText());
         Acciones.compilar(obtenerArchivo());
-        
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
