@@ -59,4 +59,4 @@ public class PseudocodeTranslator {
         }
     }
 }
-//status interconection
+//status interconection prueba
