@@ -4,13 +4,11 @@
  */
 package com.mycompany.mavenproject1;
 
-import java.awt.event.WindowListener;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import javax.swing.BoxLayout;
 
 import org.example.Acciones;
 

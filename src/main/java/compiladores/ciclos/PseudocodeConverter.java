@@ -1,4 +1,4 @@
-package ciclos;
+package compiladores.ciclos;
 
 import javax.swing.*;
 import java.io.*;
