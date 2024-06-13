@@ -3,8 +3,11 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 
 public class Acciones {
 
@@ -34,12 +37,28 @@ public class Acciones {
         // para volverlo un .tovar y guardarlo en la maquina del usuario
         // Aqui tienes una funcion para verificar que toma el input del usuario bien
         // att. Nestor
+
+        //guardar listo 
+        //att. Mario
         try (BufferedReader reader = new BufferedReader(new FileReader(TempFile))) 
         {
+            JFileChooser fileChooser = new JFileChooser();
             String linea;
-            while ((linea = reader.readLine()) != null) 
-            {
-                System.out.println(linea);
+            fileChooser.setDialogTitle("Seleccione la ubicación del archivo de salida");
+            int userSelection = fileChooser.showSaveDialog(null);
+            if (userSelection == JFileChooser.APPROVE_OPTION) {
+                File outputFile = fileChooser.getSelectedFile();
+                try {
+                    StringBuilder content = new StringBuilder();
+                    while ((linea = reader.readLine()) != null){
+                        content.append(linea + '\n');
+                    }
+                    Files.write(Paths.get(outputFile.getAbsolutePath()), content.toString().getBytes());
+                    JOptionPane.showMessageDialog(null, "Archivo guardado en: " +outputFile.getAbsolutePath());
+                } catch (IOException e) {
+                    JOptionPane.showMessageDialog(null, "Error al leer o escribir los archivos: " + e.getMessage());
+                }
+            
             }
         } 
         catch (IOException ex) 
