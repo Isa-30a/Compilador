@@ -4,13 +4,32 @@
  */
 package com.mycompany.mavenproject1;
 
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Image;
+import java.awt.Insets;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTextPane;
+import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 
 import org.example.Acciones;
+import org.example.utils.FontLoader;
+import org.example.utils.LiveKeywordHighlighter;
+import org.example.utils.NumeroLinea;
 
 /**
  *
@@ -23,7 +42,66 @@ public class Mavenproject1 extends javax.swing.JFrame {
      */
     public Mavenproject1() {
         initComponents();
+        initDesign();
     }
+
+
+    
+
+    private void initDesign() {
+
+         // Obtener la ruta del archivo de icono
+         String iconPath = new File("").getAbsolutePath() + "/resources/img/lambda.png";
+         File iconFile = new File(iconPath);
+         
+         // Verificar si el archivo de icono existe
+         if (iconFile.exists()) {
+            
+            ImageIcon originalIcon = new ImageIcon(iconPath);
+            Image image = originalIcon.getImage();
+
+            // Escalar la imagen a un tamaño adecuado (ejemplo: 64x64)
+            Image scaledImage = image.getScaledInstance(64, 64, Image.SCALE_SMOOTH);
+
+            // Crear un ImageIcon a partir de la imagen escalada
+            ImageIcon icon = new ImageIcon(scaledImage);
+             // Establecer el icono del JFrame
+             setIconImage(icon.getImage());
+         } else {
+             System.err.println("No se pudo encontrar el archivo de icono: " + iconPath);
+         }
+
+
+        Font font = getFont();
+        try {
+            font = new Font("SF Pro", Font.PLAIN, 12);
+         } catch (Exception e) {
+             System.out.println("Error load Font in JFrame");
+         }
+
+        jMenu1.setFont(font);
+        jMenu3.setFont(font);
+        jMenuBar1.setFont(font);
+        jMenuItem1.setFont(font);
+        jMenuItem2.setFont(font);
+        jMenuItem3.setFont(font);
+        jMenuItem4.setFont(font);
+        
+        jMenu1.setMargin(new Insets(5, 10, 2, 10));
+        jMenu3.setMargin(new Insets(5, 10, 2, 10));
+
+        JMenu spaceMenu = new JMenu(" ");
+        spaceMenu.setMargin(new Insets(5, 10, 2, 10));
+        jMenuBar1.add(spaceMenu,0);
+        spaceMenu.setEnabled(false);
+
+        archive.setMargin(new Insets(4, 10, 3, 10));
+        jMenuBar1.add(archive);
+        archive.setFont(new Font("SF Pro", Font.PLAIN, 13));
+        archive.setEnabled(false);
+
+    }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -37,9 +115,7 @@ public class Mavenproject1 extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
         jScrollPane3 = new javax.swing.JScrollPane();
-        jTextArea2 = new javax.swing.JTextArea();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -52,21 +128,30 @@ public class Mavenproject1 extends javax.swing.JFrame {
         setTitle("Compilador");
         setLocationByPlatform(true);
 
+        jTextPane2 = new LiveKeywordHighlighter();
+        jTextPane1 = new LiveKeywordHighlighter();
+     
         jScrollPane2.setAutoscrolls(true);
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setLineWrap(true);
-        jTextArea1.setRows(5);
-        jTextArea1.setWrapStyleWord(true);
-        jScrollPane1.setViewportView(jTextArea1);
+        jTextPane1.setEditable(true); // Si quieres que sea editable
+        NumeroLinea linea = new NumeroLinea(jTextPane1);
 
-        jTextArea2.setEditable(false);
-        jTextArea2.setColumns(20);
-        jTextArea2.setLineWrap(true);
-        jTextArea2.setRows(5);
-        jTextArea2.setWrapStyleWord(true);
-        jTextArea2.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
-        jScrollPane3.setViewportView(jTextArea2);
+        // jTextPane1.setColumns(20);
+        // jTextPane1.setLineWrap(true);
+        // jTextPane1.setRows(5);
+        jScrollPane1.setRowHeaderView(linea);
+        // jScrollPane1.setViewportView(jTextPane1);
+        jScrollPane1.setViewportView(jTextPane1);
+        
+
+        jTextPane2.setEditable(false);
+        // jTextPane2.setColumns(20);
+        // jTextPane2.setLineWrap(true);
+        // jTextPane2.setRows(5);
+        // jTextPane2.setWrapStyleWord(true);
+        jTextPane2.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        jScrollPane3.setViewportView(jTextPane2);
+
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -88,6 +173,55 @@ public class Mavenproject1 extends javax.swing.JFrame {
                     .addComponent(jScrollPane1))
                 .addContainerGap())
         );
+
+        JLabel labelPseudo = new JLabel("Pseudo");
+        JLabel labelCpp = new JLabel("C++");
+
+        labelCpp.setLayout(null);
+        labelCpp.setOpaque(true);
+        labelCpp.setForeground(new Color(255,255,255));
+        labelCpp.setBackground(new Color(0,0,0,80));
+        jTextPane2.add(labelCpp);
+
+        labelPseudo.setLayout(null);
+        labelPseudo.setOpaque(true);
+        // labelPseudo.setBackground(Color.RED);
+        labelPseudo.setForeground(new Color(255,255,255));
+        labelPseudo.setBackground(new Color(0,0,0,80));
+       
+        jTextPane1.add(labelPseudo);
+
+        try {
+            Font font = new Font("SF Pro", Font.BOLD, 14);
+            labelCpp.setFont(font);
+            labelPseudo.setFont(font);
+        } catch (Exception e) {
+        
+        }
+
+        // labelCpp.setBounds((int)(jPanel1.getPreferredSize().getWidth()/2)-200,jPanel1.getHeight(), 100,100);
+        labelCpp.setHorizontalAlignment(SwingConstants.CENTER);
+        labelPseudo.setHorizontalAlignment(SwingConstants.CENTER);
+
+        jPanel1.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                // Obtener el tamaño actual del panel
+                int panelWidth = (int)jPanel1.getWidth();
+                int panelHeight = 0;
+
+                // Calcular la posición del labelCpp
+                int labelWidth = 100; // Ancho del JLabel
+                int labelHeight = 20; // Alto del JLabel
+                int labelX = (panelWidth / 2) - 145; // Centrado horizontal
+                int labelX2 = (panelWidth / 2) - 180; // Centrado horizontal
+                int labelY = 0; // 10 píxeles de margen desde abajo
+
+                // Establecer la posición del JLabel
+                labelCpp.setBounds(labelX, labelY, labelWidth, labelHeight);
+                labelPseudo.setBounds(labelX2,labelY,labelWidth,labelHeight);
+            }
+        });
 
         jScrollPane2.setViewportView(jPanel1);
 
@@ -125,7 +259,7 @@ public class Mavenproject1 extends javax.swing.JFrame {
         jMenu3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jMenu3.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
 
-        jMenuItem3.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        jMenuItem3.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.CTRL_DOWN_MASK | java.awt.event.InputEvent.ALT_DOWN_MASK));
         jMenuItem3.setText("Compilar");
         jMenuItem3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jMenuItem3.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
@@ -156,22 +290,28 @@ public class Mavenproject1 extends javax.swing.JFrame {
 
         pack();
         setLocationRelativeTo(null);
+
+
     }// </editor-fold>//GEN-END:initComponents
+
+    
 
     private void jMenu1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu1MouseClicked
         // TODO add your handling code here:
     }//GEN-LAST:event_jMenu1MouseClicked
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {                                           
-        Acciones.abrirArchivo(jTextArea1);
+        Acciones.abrirArchivo(jTextPane1);
     }                                          
 
-    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {                                           
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {               
         Acciones.guardar(obtenerArchivo());
     }                                          
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        System.out.println(jTextPane1.getText());
         Acciones.compilar(obtenerArchivo());
+        
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
@@ -209,12 +349,17 @@ public class Mavenproject1 extends javax.swing.JFrame {
         //</editor-fold>
         //</editor-fold>
 
+        FontLoader.loadFont("RobotoMono-Regular.ttf");
+        FontLoader.loadFont("RobotoMono-Light.ttf");
+        FontLoader.loadFont("SF-Pro.ttf");
+
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
                 Mavenproject1 window = new Mavenproject1();
                 window.setVisible(true);
+                window.setBounds(0, 0, 1280, 720);
                 window.setLocationRelativeTo(null);
 
             }
@@ -233,15 +378,17 @@ public class Mavenproject1 extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JTextArea jTextArea2;
+    private javax.swing.JTextPane jTextPane1;
+    private javax.swing.JTextPane jTextPane2;
+    public static JMenu archive = new JMenu("untitled.tovar");
     // End of variables declaration//GEN-END:variables
 
     private File obtenerArchivo()
     {
         try 
         {
-            String codigo = jTextArea1.getText();
+            String codigo = jTextPane1.getText();
+            
             File tempFile = File.createTempFile("codigo", ".txt");
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile)))
             {

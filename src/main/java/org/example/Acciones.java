@@ -9,6 +9,10 @@ import java.nio.file.Paths;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
+import com.mycompany.mavenproject1.Mavenproject1;
 
 import compiladores.functions.FunctionsCompiler;
 import compiladores.ciclos.PseudocodeProcessorCiclos;
@@ -36,6 +40,8 @@ public class Acciones {
         CompilarYEjecutar(TempFile.getPath());
     }
 
+    private static String lastDirectoryPath = "";
+
     public static void guardar(File TempFile)
     {
         // Esta funcion ya recibe el input del usuario en un .txt llamado TempFile
@@ -46,14 +52,32 @@ public class Acciones {
 
         //guardar listo 
         //att. Mario
+
+        // Si tenemos una última ruta válida, establecerla como directorio inicial
+        
         try (BufferedReader reader = new BufferedReader(new FileReader(TempFile))) 
         {
             JFileChooser fileChooser = new JFileChooser();
+
+            if (!lastDirectoryPath.isEmpty()) {
+                fileChooser.setCurrentDirectory(new File(lastDirectoryPath));
+            }
+            
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivos Tovar (*.tovar)", "tovar");
+                fileChooser.setFileFilter(filter);
+
             String linea;
             fileChooser.setDialogTitle("Seleccione la ubicación del archivo de salida");
             int userSelection = fileChooser.showSaveDialog(null);
+
             if (userSelection == JFileChooser.APPROVE_OPTION) {
                 File outputFile = fileChooser.getSelectedFile();
+
+                String fileName = outputFile.getName();
+                if (!fileName.toLowerCase().endsWith(".tovar")) {
+                    outputFile = new File(outputFile.getParentFile(), fileName + ".tovar");
+                }
+
                 try {
                     StringBuilder content = new StringBuilder();
                     while ((linea = reader.readLine()) != null){
@@ -61,6 +85,9 @@ public class Acciones {
                     }
                     Files.write(Paths.get(outputFile.getAbsolutePath()), content.toString().getBytes());
                     JOptionPane.showMessageDialog(null, "Archivo guardado en: " +outputFile.getAbsolutePath());
+                    
+                    Mavenproject1.archive.setText(outputFile.getName());
+
                 } catch (IOException e) {
                     JOptionPane.showMessageDialog(null, "Error al leer o escribir los archivos: " + e.getMessage());
                 }
@@ -73,7 +100,7 @@ public class Acciones {
         }
     }
 
-    public static void abrirArchivo(JTextArea area)
+    public static void abrirArchivo(JTextPane area)
     {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setFileFilter(new javax.swing.filechooser.FileFilter() {
@@ -88,6 +115,11 @@ public class Acciones {
                 return "Archivos de texto (*.tovar)";
             }
         });
+
+        // Establecer el directorio inicial basado en la última ubicación abierta
+        if (!lastDirectoryPath.isEmpty()) {
+            fileChooser.setCurrentDirectory(new File(lastDirectoryPath));
+        }
         int result = fileChooser.showOpenDialog(null);
         
         if (result == JFileChooser.APPROVE_OPTION) 
@@ -101,6 +133,7 @@ public class Acciones {
             }catch (IOException exception){
                 JOptionPane.showMessageDialog(null, "Error al leer el archivo: " + exception.getMessage());
             }
+            Mavenproject1.archive.setText(archivo.getName());
         } 
         else 
         {
