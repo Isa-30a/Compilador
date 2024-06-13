@@ -2,6 +2,9 @@
 using namespace std;
 int main()
 {
-	cout<<"tu RE CONTRA PVTA mama"<<endl;
+	for(int a=0; a<10; a++)
+	{
+		cout<<"a = "<<a<<endl;
+	}
 	return 0;
 }
