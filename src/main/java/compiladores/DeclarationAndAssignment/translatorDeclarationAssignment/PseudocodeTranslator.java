@@ -101,4 +101,4 @@ public class PseudocodeTranslator {
         return afdDeclaration.isValidDeclaration(segment);
     }
 }
-
+//comentario de prueba
