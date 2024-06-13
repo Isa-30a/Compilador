@@ -1,4 +1,4 @@
-package ciclos;
+package compiladores.ciclos;
 
 import java.util.*;
 import java.util.regex.*;
