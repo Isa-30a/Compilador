@@ -10,6 +10,11 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 
+import compiladores.functions.FunctionsCompiler;
+import compiladores.ciclos.PseudocodeProcessorCiclos;
+import compiladores.condicionales.IfElseConverter;
+import compiladores.condicionales.LogicalOperators;
+
 public class Acciones {
 
     static {
@@ -122,5 +127,28 @@ public class Acciones {
         // El metodo ejecutar va a compilar en c++ el archivo .txt que le pases
         // Para que funcione mi metodo solo mandale el archivo que aqui generaste
         // att. Nestor
+        try(BufferedReader reader = new BufferedReader(new FileReader(TempFile))){
+            StringBuilder builder = new StringBuilder();
+            FunctionsCompiler functionsComplier = new FunctionsCompiler();
+            PseudocodeProcessorCiclos ciclesCompiler = new PseudocodeProcessorCiclos();
+            //IfElseConverter conditionalStructuresCompiler = new IfElseConverter();
+            //LogicalOperators logicalOperatorsCompiler = new LogicalOperators();
+            String linea;
+            String toComplie;
+            while((linea = reader.readLine()) != null){
+                builder.append(linea + '\n');
+            }
+            toComplie = functionsComplier.pseudoToCpp(builder.toString());
+            toComplie = IfElseConverter.convertSwitchCase(toComplie);
+            toComplie = IfElseConverter.convertToCpp(toComplie);
+            toComplie = LogicalOperators.convertToCpp(toComplie);
+            toComplie = ciclesCompiler.convertToCpp(toComplie);
+            System.out.println(toComplie);
+        }catch (IOException exception){
+            JOptionPane.showMessageDialog(null, "Error al traducir el archivo: " + exception.getMessage());
+        }
+        
+
+
     }
 }
