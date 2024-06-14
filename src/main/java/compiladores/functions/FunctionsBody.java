@@ -73,16 +73,6 @@ public class FunctionsBody {
                     if (splitChain[k].equals("FUNCION") && k == 0) {
                         errorQueue.offer("It's not possible create a function inside another function");
                     }
-                    if (splitChain[k].indexOf("(") == 0) {
-                        if (c.call(splitChain[k - 1], functionsNames).equals("Syntax Error")) {
-                            errorQueue.offer("This function doesn't exist");
-                        }
-                    } else if (splitChain[k].indexOf("(") != -1) {
-                        String auxChain = splitChain[k].substring(0, splitChain[k].indexOf("("));
-                        if (c.call(auxChain, functionsNames).equals("Syntax Error")) {
-                            errorQueue.offer("This function doesn't exist");
-                        }
-                    }
 
                     if (v.checkReturn(splitChain[k])) {
                         if (!flag) {
