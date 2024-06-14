@@ -328,7 +328,7 @@ public class Mavenproject1 extends javax.swing.JFrame {
         // coloque obtener archivo, pero me tienen que enviar el archivo compilado en la opcion 3
         // mira la clase de acciones para mas informacion al respecto
         // att. Nestor
-        Acciones.ejecutar(obtenerArchivo());
+        Acciones.ejecutar(Acciones.compilar(obtenerArchivo()));
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     /**
