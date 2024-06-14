@@ -14,23 +14,6 @@ import java.util.regex.Pattern;
 
 public class FunctionsUtils {
 
-    String[] splitExpresion(String[] s) {
-        int i = 0;
-        List<String> newString = new ArrayList<>();
-
-        do {
-            int old = i;
-            
-            if (!s[i].isBlank()) {
-                newString.add(s[i]);
-            }
-
-            i++;
-        } while (i < s.length);
-
-        return newString.toArray(new String[0]);
-    }
-
     String types(String s) {
         if (Pattern.compile("ENTERO").matcher(s).find()) {
             return "int";
@@ -55,10 +38,6 @@ public class FunctionsUtils {
         return Pattern.compile("RETORNA").matcher(s).find();
     }
     
-    boolean checkEnd(String s) {
-        return Pattern.compile("FIN").matcher(s).find();
-    }
-
     boolean isType(String s) {
         boolean error = false;
 
