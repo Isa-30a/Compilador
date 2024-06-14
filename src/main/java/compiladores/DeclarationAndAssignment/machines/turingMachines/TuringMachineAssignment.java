@@ -7,16 +7,18 @@ import java.util.List;
 public class TuringMachineAssignment {
 
     public String translateAssignment(String pseudocode) {
+                
         String[] tokens = pseudocode.split("\\s*=\\s*");
         if (tokens.length != 2) {
             return "El pseudocódigo no es válido.";
         }
         String variable = tokens[0].trim();
         String value = tokens[1].trim();
+        
         return variable + " = " + translateValue(value) + ";";
     }
 
-    private String translateValue(String value) {
+private String translateValue(String value) {
         switch (value) {
             case "NULO":
                 return "null";
@@ -26,13 +28,12 @@ public class TuringMachineAssignment {
                 return "true";
             default:
                 // Check if value is an array or matrix
-                if (value.startsWith("[") && value.endsWith("]")) {
-                    return translateArrayOrMatrix(value);
-                }
+        if (value.startsWith("[") && value.endsWith("]")) {
+            return translateArrayOrMatrix(value);
+        }
                 return value;
         }
     }
-
     private String translateArrayOrMatrix(String value) {
         // Remove leading and trailing brackets
         String content = value.substring(1, value.length() - 1).trim();
@@ -70,11 +71,4 @@ public class TuringMachineAssignment {
         return elements.toArray(new String[0]);
     }
 }
-
-
-
-
-
-
-
 

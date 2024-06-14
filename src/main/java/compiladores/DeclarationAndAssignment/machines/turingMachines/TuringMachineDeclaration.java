@@ -20,6 +20,7 @@ public class TuringMachineDeclaration {
     }
 
     public String translateDeclaration(String pseudocode) {
+        
         String[] tokens = pseudocode.split("\\s+");
         if (tokens.length != 2) {
             return "El pseudocódigo no es válido.";
