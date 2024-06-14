@@ -110,3 +110,4 @@ public class PseudocodeTranslator {
         return str.substring(index + 1).trim(); // Obtener subcadena después de "=" y eliminar espacios adicionales
     }
 }
+//listos para el enlace
