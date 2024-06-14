@@ -28,6 +28,7 @@ import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 
 import org.example.Acciones;
+import org.example.utils.CppFormatter;
 import org.example.utils.FontLoader;
 import org.example.utils.LiveKeywordHighlighter;
 import org.example.utils.NumeroLinea;
@@ -391,6 +392,11 @@ public class Mavenproject1 extends javax.swing.JFrame {
     public static javax.swing.JTextArea jTextArea2;
     public static JMenu archive = new JMenu("untitled.tovar");
     // End of variables declaration//GEN-END:variables
+
+    public static void writeToCppField(String code){
+        String formattedCode = CppFormatter.formatCode(code);
+        jTextArea2.setText(code);
+    }
 
     private File obtenerArchivo()
     {
