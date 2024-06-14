@@ -16,17 +16,20 @@ import java.util.regex.Pattern;
 
 public class FunctionsDeclaration {
 
+    private Queue<String> errorQueue = new LinkedList<>();
 
     public String declare(String chain, List<String> array) {
         FunctionsUtils v = new FunctionsUtils();
+        CallFunction c = new CallFunction();
+        FunctionsBody fb = new FunctionsBody();
         boolean error = false;
         String headerExpresion = "\\s*FUNCION(\\s+[a-zA-Z_][a-zA-Z0-9_]*\\s*)([(]((\\s*)|((\\s*)(BOOLEANO|ENTERO|FLOTANTE|CARACTER)\\s+[a-zA-Z_][a-zA-Z0-9_]*(\\s*\\[\\s*([a-zA-Z_][a-zA-Z0-9_]*|[0-9]+)*\\s*\\]\\s*)*)((\\s*)[,](\\s*)((BOOLEANO|ENTERO|FLOTANTE|CARACTER)\\s+[a-zA-Z_][a-zA-Z0-9_]*(\\s*\\[\\s*([a-zA-Z_][a-zA-Z0-9_]*|[0-9]+)*\\s*\\]\\s*|\\s*)))*)(\\s*)[)])\\s*:\\s*(BOOLEANO|ENTERO|FLOTANTE|CARACTER|VACIO)\\s*";
         String result = "";
         String[] splitChain = null;
         List<String> newValue = new ArrayList<>();
         boolean paramFlag = false;
-        
-        if(!chain.isBlank()) {
+
+        if (!chain.isBlank()) {
             if (Pattern.compile(headerExpresion).matcher(chain).find()) {
                 splitChain = chain.trim().split("[ (),:]");
                 if (splitChain[0].equals("FUNCION")) {
@@ -34,6 +37,10 @@ public class FunctionsDeclaration {
                     if (error) {
                         newValue.add(v.types(splitChain[splitChain.length - 1]));
                         newValue.add(" ");
+
+                        if (!c.call(splitChain[1], array).equals("Syntax Error")) {
+                            errorQueue.offer("This function's been already created");
+                        }
                         newValue.add(splitChain[1] + "(");
                         array.add(splitChain[1]);
                         for (int i = 2; i < splitChain.length; i++) {
@@ -61,5 +68,8 @@ public class FunctionsDeclaration {
             return result;
         }
     }
-    
+
+    public Queue<String> getErrorQueue() {
+        return errorQueue;
+    }
 }
