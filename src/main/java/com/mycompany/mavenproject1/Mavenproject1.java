@@ -22,11 +22,13 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 
 import org.example.Acciones;
+import org.example.utils.CppFormatter;
 import org.example.utils.FontLoader;
 import org.example.utils.LiveKeywordHighlighter;
 import org.example.utils.NumeroLinea;
@@ -128,7 +130,7 @@ public class Mavenproject1 extends javax.swing.JFrame {
         setTitle("Compilador");
         setLocationByPlatform(true);
 
-        jTextPane2 = new LiveKeywordHighlighter();
+        jTextArea2 = new JTextArea();
         jTextPane1 = new LiveKeywordHighlighter();
      
         jScrollPane2.setAutoscrolls(true);
@@ -144,13 +146,13 @@ public class Mavenproject1 extends javax.swing.JFrame {
         jScrollPane1.setViewportView(jTextPane1);
         
 
-        jTextPane2.setEditable(false);
-        // jTextPane2.setColumns(20);
-        // jTextPane2.setLineWrap(true);
-        // jTextPane2.setRows(5);
-        // jTextPane2.setWrapStyleWord(true);
-        jTextPane2.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
-        jScrollPane3.setViewportView(jTextPane2);
+        // jTextArea2.setEditable(false);
+        // jTextArea2.setColumns(20);
+        // jTextArea2.setLineWrap(true);
+        // jTextArea2.setRows(5);
+        // jTextArea2.setWrapStyleWord(true);
+        jTextArea2.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        jScrollPane3.setViewportView(jTextArea2);
 
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -181,7 +183,7 @@ public class Mavenproject1 extends javax.swing.JFrame {
         labelCpp.setOpaque(true);
         labelCpp.setForeground(new Color(255,255,255));
         labelCpp.setBackground(new Color(0,0,0,80));
-        jTextPane2.add(labelCpp);
+        jTextArea2.add(labelCpp);
 
         labelPseudo.setLayout(null);
         labelPseudo.setOpaque(true);
@@ -263,12 +265,22 @@ public class Mavenproject1 extends javax.swing.JFrame {
         jMenuItem3.setText("Compilar");
         jMenuItem3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jMenuItem3.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
+        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem3ActionPerformed(evt);
+            }
+        });
         jMenu3.add(jMenuItem3);
 
         jMenuItem4.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         jMenuItem4.setText("Ejecutar");
         jMenuItem4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jMenuItem4.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
+        jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem4ActionPerformed(evt);
+            }
+        });
         jMenu3.add(jMenuItem4);
 
         jMenuBar1.add(jMenu3);
@@ -309,9 +321,7 @@ public class Mavenproject1 extends javax.swing.JFrame {
     }                                          
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        System.out.println(jTextPane1.getText());
         Acciones.compilar(obtenerArchivo());
-        
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
@@ -379,9 +389,14 @@ public class Mavenproject1 extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTextPane jTextPane1;
-    private javax.swing.JTextPane jTextPane2;
+    public static javax.swing.JTextArea jTextArea2;
     public static JMenu archive = new JMenu("untitled.tovar");
     // End of variables declaration//GEN-END:variables
+
+    public static void writeToCppField(String code){
+        String formattedCode = CppFormatter.formatCode(code);
+        jTextArea2.setText(code);
+    }
 
     private File obtenerArchivo()
     {
