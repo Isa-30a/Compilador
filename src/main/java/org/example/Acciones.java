@@ -2,13 +2,13 @@ package org.example;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -18,7 +18,7 @@ import compiladores.functions.FunctionsCompiler;
 import compiladores.ciclos.PseudocodeProcessorCiclos;
 import compiladores.condicionales.IfElseConverter;
 import compiladores.condicionales.LogicalOperators;
-
+import compiladores.DeclarationAndAssignment.translatorDeclarationAssignment.PseudocodeTranslator;
 public class Acciones {
 
     static {
@@ -37,6 +37,8 @@ public class Acciones {
         // obligatoriamente debes pasarlo en formato .txt, este genera el cpp en la carpeta 
         // donde esta el pom.xml por si quieres saber donde se guarda el ultimo cpp generado
         // att. Nestor
+
+
         CompilarYEjecutar(TempFile.getPath());
     }
 
@@ -103,6 +105,7 @@ public class Acciones {
     public static void abrirArchivo(JTextPane area)
     {
         JFileChooser fileChooser = new JFileChooser();
+        area.setText("");
         fileChooser.setFileFilter(new javax.swing.filechooser.FileFilter() {
             @Override
             public boolean accept(File f) 
@@ -152,7 +155,7 @@ public class Acciones {
         //att. Mario
     }
 
-    public static void compilar(File TempFile)
+    public static File compilar(File TempFile)
     {
         // Aqui haz la tarea de mandarle a todos los compiladores las partes
         // Que les corresponde, como salida haz un archivo .txt que tenga el codigo
@@ -160,29 +163,45 @@ public class Acciones {
         // El metodo ejecutar va a compilar en c++ el archivo .txt que le pases
         // Para que funcione mi metodo solo mandale el archivo que aqui generaste
         // att. Nestor
+        File compiled = new File(TempFile.getParentFile(), "compiled.txt");
         try(BufferedReader reader = new BufferedReader(new FileReader(TempFile))){
             StringBuilder builder = new StringBuilder();
             FunctionsCompiler functionsComplier = new FunctionsCompiler();
             PseudocodeProcessorCiclos ciclesCompiler = new PseudocodeProcessorCiclos();
-            //IfElseConverter conditionalStructuresCompiler = new IfElseConverter();
-            //LogicalOperators logicalOperatorsCompiler = new LogicalOperators();
+            PseudocodeTranslator variablesCompiler = new PseudocodeTranslator();
+            
+
             String linea;
             String toComplie;
             while((linea = reader.readLine()) != null){
                 builder.append(linea + '\n');
             }
             toComplie = functionsComplier.pseudoToCpp(builder.toString());
-            // toComplie = IfElseConverter.convertSwitchCase(toComplie);
-            // toComplie = IfElseConverter.convertToCpp(toComplie);
-            // toComplie = LogicalOperators.convertToCpp(toComplie);
-            // toComplie = ciclesCompiler.convertToCpp(toComplie);
-            System.out.println(toComplie);
+            toComplie = variablesCompiler.translate(toComplie);
+            toComplie = IfElseConverter.convertSwitchCase(toComplie);
+            toComplie = IfElseConverter.convertToCpp(toComplie);
+            toComplie = LogicalOperators.convertToCpp(toComplie);
+            toComplie = ciclesCompiler.convertToCpp(toComplie);
+            //System.out.println(toComplie);
             Mavenproject1.jTextArea2.setText(toComplie);
+
+            Files.write(compiled.toPath(), toComplie.getBytes());
+            try {
+                FileWriter writer = new FileWriter(compiled);
+                writer.write(toComplie);
+                writer.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            
         }catch (IOException exception){
             JOptionPane.showMessageDialog(null, "Error al traducir el archivo: " + exception.getMessage());
         }
         
+        
 
 
+
+        return compiled;
     }
 }

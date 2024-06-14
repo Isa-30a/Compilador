@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 
 public class FunctionsBody {
 
-    private static List<String> functionsNames = new ArrayList<>();
+    private List<String> functionsNames = new ArrayList<>();
     private Queue<String> errorQueue = new LinkedList<>();
     private boolean mainFlag = false;
     private boolean closeMainFlag = false; //added
