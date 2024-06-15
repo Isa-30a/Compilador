@@ -16,19 +16,11 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.JTextPane;
 import javax.swing.SwingConstants;
-import javax.swing.UIManager;
-
 import org.example.Acciones;
 import org.example.utils.CppFormatter;
 import org.example.utils.FontLoader;
@@ -212,12 +204,19 @@ public class Mavenproject1 extends javax.swing.JFrame {
         labelCpp.setHorizontalAlignment(SwingConstants.CENTER);
         labelPseudo.setHorizontalAlignment(SwingConstants.CENTER);
         jPanel1.setMaximumSize(maxSize);
+        jScrollPane1.setEnabled(false);
+        jScrollPane3.setEnabled(false);
+        jScrollPane1.setMaximumSize(maxSize);
+        jScrollPane3.setMaximumSize(maxSize);
+        jScrollPane1.setPreferredSize(new Dimension(300, 300));
+        jScrollPane3.setPreferredSize(new Dimension(300, 300));
+        jScrollPane1.setMinimumSize(new Dimension(300, 300));
+        jScrollPane3.setMinimumSize(new Dimension(300, 300));
         jPanel1.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
                 // Obtener el tamaño actual del panel
                 int panelWidth = (int)jPanel1.getWidth();
-                int panelHeight = 0;
 
                 // Calcular la posición del labelCpp
                 int labelWidth = 100; // Ancho del JLabel
