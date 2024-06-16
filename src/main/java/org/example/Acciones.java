@@ -164,18 +164,19 @@ public class Acciones {
             StringBuilder builder = new StringBuilder();
             FunctionsCompiler functionsComplier = new FunctionsCompiler();
             PseudocodeProcessorCiclos ciclesCompiler = new PseudocodeProcessorCiclos();
-            //IfElseConverter conditionalStructuresCompiler = new IfElseConverter();
-            //LogicalOperators logicalOperatorsCompiler = new LogicalOperators();
+            IfElseConverter conditionalStructuresCompiler = new IfElseConverter();
+            LogicalOperators logicalOperatorsCompiler = new LogicalOperators();
             String linea;
             String toComplie;
             while((linea = reader.readLine()) != null){
                 builder.append(linea + '\n');
             }
             toComplie = functionsComplier.pseudoToCpp(builder.toString());
-            // toComplie = IfElseConverter.convertSwitchCase(toComplie);
-            // toComplie = IfElseConverter.convertToCpp(toComplie);
+            toComplie = conditionalStructuresCompiler.convertToCpp(toComplie);
+            toComplie = logicalOperatorsCompiler.convertToCpp(toComplie);
             // toComplie = LogicalOperators.convertToCpp(toComplie);
-            // toComplie = ciclesCompiler.convertToCpp(toComplie);
+            toComplie = ciclesCompiler.convertToCpp(toComplie);
+
             System.out.println(toComplie);
             Mavenproject1.jTextArea2.setText(toComplie);
         }catch (IOException exception){

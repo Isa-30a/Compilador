@@ -5,28 +5,22 @@
 package com.mycompany.mavenproject1;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.Insets;
+import java.awt.Toolkit;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.JTextPane;
 import javax.swing.SwingConstants;
-import javax.swing.UIManager;
-
 import org.example.Acciones;
 import org.example.utils.CppFormatter;
 import org.example.utils.FontLoader;
@@ -146,11 +140,16 @@ public class Mavenproject1 extends javax.swing.JFrame {
         jScrollPane1.setViewportView(jTextPane1);
         
 
-        // jTextArea2.setEditable(false);
-        // jTextArea2.setColumns(20);
-        // jTextArea2.setLineWrap(true);
-        // jTextArea2.setRows(5);
-        // jTextArea2.setWrapStyleWord(true);
+        jTextArea2.setEditable(false);
+        jTextArea2.setColumns(20);
+        jTextArea2.setLineWrap(true);
+        jTextArea2.setRows(5);
+        jTextArea2.setWrapStyleWord(true);
+        jTextArea2.setFont(new Font("RobotoMono-Regular", Font.PLAIN, 14));
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        Dimension maxSize = new Dimension(screenSize.width, screenSize.height);
+        jTextArea2.setMaximumSize(maxSize);
+        jTextPane1.setMaximumSize(maxSize); 
         jTextArea2.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
         jScrollPane3.setViewportView(jTextArea2);
 
@@ -204,13 +203,20 @@ public class Mavenproject1 extends javax.swing.JFrame {
         // labelCpp.setBounds((int)(jPanel1.getPreferredSize().getWidth()/2)-200,jPanel1.getHeight(), 100,100);
         labelCpp.setHorizontalAlignment(SwingConstants.CENTER);
         labelPseudo.setHorizontalAlignment(SwingConstants.CENTER);
-
+        jPanel1.setMaximumSize(maxSize);
+        jScrollPane1.setEnabled(false);
+        jScrollPane3.setEnabled(false);
+        jScrollPane1.setMaximumSize(maxSize);
+        jScrollPane3.setMaximumSize(maxSize);
+        jScrollPane1.setPreferredSize(new Dimension(300, 300));
+        jScrollPane3.setPreferredSize(new Dimension(300, 300));
+        jScrollPane1.setMinimumSize(new Dimension(300, 300));
+        jScrollPane3.setMinimumSize(new Dimension(300, 300));
         jPanel1.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
                 // Obtener el tamaño actual del panel
                 int panelWidth = (int)jPanel1.getWidth();
-                int panelHeight = 0;
 
                 // Calcular la posición del labelCpp
                 int labelWidth = 100; // Ancho del JLabel
