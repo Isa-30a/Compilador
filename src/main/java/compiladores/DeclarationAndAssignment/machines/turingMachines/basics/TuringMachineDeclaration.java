@@ -1,5 +1,5 @@
 
-package compiladores.DeclarationAndAssignment.machines.turingMachines;
+package compiladores.DeclarationAndAssignment.machines.turingMachines.basics;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,11 +20,13 @@ public class TuringMachineDeclaration {
     }
 
     public String translateDeclaration(String pseudocode) {
-        
+
         String[] tokens = pseudocode.split("\\s+");
+
         if (tokens.length != 2) {
             return "El pseudocódigo no es válido.";
         }
+
         String type = tokens[0].trim();
         String variable = tokens[1].trim();
         String cPlusPlusType = translateType(type);
