@@ -4,6 +4,7 @@ package compiladores.DeclarationAndAssignment.machines.afds;
 import java.util.regex.Pattern;
 
 public class Afd_Declaration {
+
     // Método para verificar si una declaración es válida
     public boolean isValidDeclaration(String input) {
         // Patrón para las declaraciones: tipo de dato seguido de una variable, incluyendo arreglos y matrices
