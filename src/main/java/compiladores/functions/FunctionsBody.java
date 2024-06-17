@@ -17,7 +17,6 @@ import java.util.regex.Pattern;
 public class FunctionsBody {
 
     private List<String> functionsNames = new ArrayList<>();
-    private Queue<String> errorQueue = new LinkedList<>();
     private boolean mainFlag = false;
     private boolean closeMainFlag = false; //added
     private boolean flag = false;
@@ -62,18 +61,13 @@ public class FunctionsBody {
                         newValue.add("){\n");
                     }
                 } else if (splitChain[0].equals("INICIO")) {
-                    if (closeMainFlag && mainFlag) {
-                        errorQueue.offer("Main function only can be created once");
-                        newValue.add(chain + "\n");
-                    } else if (!closeMainFlag && !mainFlag) {
+                    if (!closeMainFlag && !mainFlag) {
                         newValue.add("int main(){\n");
                         mainFlag = true;
                         flag = false;
-                    } else if(closeMainFlag != mainFlag) {
+                    } else {
                         newValue.add(chain + "\n");
-                        errorQueue.offer("It's not possible create a function inside another function");
                     }
-
                 } else if (splitChain[0].equals("FUNCION") && (closeMainFlag != mainFlag)) {
                     newValue.add(chain + "\n");
                 }
@@ -83,16 +77,11 @@ public class FunctionsBody {
                     if (k == 0 && blockFlag) {
                         newValue.add("\t");
                     }
-                    if (splitChain[k].equals("FUNCION") && k == 0) {
-                        errorQueue.offer("It's not possible create a function inside another function");
-                    }
                     if (v.checkReturn(splitChain[k]) && splitChain[k].length() <= 7) {
                         if (!flag) {
                             returnFlag = true;
                             newValue.add("return ");
                             continue;
-                        } else {
-                            errorQueue.offer("A void function can't return any value");
                         }
                     }
                     if (!returnFlag) {
@@ -103,9 +92,6 @@ public class FunctionsBody {
                             newValue.add(" ");
                         }
                     } else {
-                        if(splitChain[k].contains("[") || splitChain[k].contains("]")) {
-                            errorQueue.offer(splitChain[k] + " isn't returnable");
-                        }
                         newValue.add(splitChain[k]);
                         if (k == splitChain.length - 1) {
                             newValue.add(";");
@@ -123,12 +109,10 @@ public class FunctionsBody {
                     newValue.add("}\n");
                 } else if(splitChain[splitChain.length - 1].equals("INICIO")) {
                     newValue.add(chain + "\n");
-                    errorQueue.offer("Keyword \"FIN INICIO\" has been found without a keyword \"INICIO\" before of it");
                 }
                 
                 if (splitChain[splitChain.length - 1].equals("FUNCION") && (!blockFlag || closeMainFlag != mainFlag)) {
                     newValue.add(chain + "\n");
-                    errorQueue.offer("Keyword \"FIN FUNCION\" has been found without a keyword \"FUNCION\" before of it");
                 } else if(splitChain[splitChain.length - 1].equals("FUNCION") && blockFlag) {
                     newValue.add("}\n");
                 }
@@ -144,10 +128,6 @@ public class FunctionsBody {
 
     public List<String> getFunctionsNames() {
         return functionsNames;
-    }
-
-    public Queue<String> getErrorQueue() {
-        return errorQueue;
     }
 
     public boolean isMain() {
