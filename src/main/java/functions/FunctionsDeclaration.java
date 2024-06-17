@@ -15,8 +15,6 @@ import java.util.Queue;
 import java.util.regex.Pattern;
 
 public class FunctionsDeclaration {
-
-
     public String declare(String chain, List<String> array) {
         FunctionsUtils v = new FunctionsUtils();
         boolean error = false;

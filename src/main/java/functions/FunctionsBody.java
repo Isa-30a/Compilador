@@ -17,7 +17,6 @@ import java.util.regex.Pattern;
 public class FunctionsBody {
 
     private List<String> functionsNames = new ArrayList<>();
-    private Queue<String> errorQueue = new LinkedList<>();
     private boolean mainFlag = false;
     private boolean flag = false;
     public String body(String chain, boolean blockFlag) {
@@ -70,27 +69,12 @@ public class FunctionsBody {
                     if (k == 0 && blockFlag) {
                         newValue.add("\t");
                     }
-                    if (splitChain[k].equals("FUNCION") && k == 0) {
-                        errorQueue.offer("It's not possible create a function inside another function");
-                    }
-                    if (splitChain[k].indexOf("(") == 0) {
-                        if (c.call(splitChain[k - 1], functionsNames).equals("Syntax Error")) {
-                            errorQueue.offer("This function doesn't exist");
-                        }
-                    } else if (splitChain[k].indexOf("(") != -1) {
-                        String auxChain = splitChain[k].substring(0, splitChain[k].indexOf("("));
-                        if (c.call(auxChain, functionsNames).equals("Syntax Error")) {
-                            errorQueue.offer("This function doesn't exist");
-                        }
-                    }
 
                     if (v.checkReturn(splitChain[k])) {
                         if (!flag) {
                             returnFlag = true;
                             newValue.add("return ");
                             continue;
-                        } else {
-                            errorQueue.offer("A void function can't return any value");
                         }
                     }
                     if (!returnFlag) {
@@ -116,7 +100,6 @@ public class FunctionsBody {
                 if ((splitChain[splitChain.length - 1].equals("FUNCION") || splitChain[splitChain.length - 1].equals("INICIO")) && blockFlag) {
                     newValue.add("}");
                 } else if (splitChain[splitChain.length - 1].equals("FUNCION") || splitChain[splitChain.length - 1].equals("INICIO")) {
-                    errorQueue.offer("Keyword \"FIN FUNCION\" has been found without a keyword \"FUNCION\" before of it");
                     newValue.add(chain);
                 }
                 newValue.add("\n");
@@ -132,10 +115,6 @@ public class FunctionsBody {
 
     public List<String> getFunctionsNames() {
         return functionsNames;
-    }
-
-    public Queue<String> getErrorQueue() {
-        return errorQueue;
     }
 
     public boolean isMain() {
