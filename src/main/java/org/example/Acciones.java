@@ -18,7 +18,7 @@ import compiladores.functions.FunctionsCompiler;
 import compiladores.ciclos.PseudocodeProcessorCiclos;
 import compiladores.condicionales.IfElseConverter;
 import compiladores.condicionales.LogicalOperators;
-import compiladores.DeclarationAndAssignment.translatorDeclarationAssignment.PseudocodeTranslator;
+import compiladores.DeclarationAndAssignment.translatorDeclarationAssignment.ConectToStringTxt;
 public class Acciones {
 
     static {
@@ -168,26 +168,26 @@ public class Acciones {
             StringBuilder builder = new StringBuilder();
             FunctionsCompiler functionsComplier = new FunctionsCompiler();
             PseudocodeProcessorCiclos ciclesCompiler = new PseudocodeProcessorCiclos();
-            PseudocodeTranslator variablesCompiler = new PseudocodeTranslator();
+            ConectToStringTxt variablesCompiler = new ConectToStringTxt();
             IfElseConverter conditionalStructuresCompiler = new IfElseConverter();
             LogicalOperators logicalOperatorsCompiler = new LogicalOperators();
           
             String linea;
-            String toComplie;
+            String toCompile;
             while((linea = reader.readLine()) != null){
                 builder.append(linea + '\n');
             }
-            toComplie = functionsComplier.pseudoToCpp(builder.toString());
-            toComplie = variablesCompiler.translate(toComplie);
-            toComplie = conditionalStructuresCompiler.convertToCpp(toComplie);
-            toComplie = logicalOperatorsCompiler.convertToCpp(toComplie);
-            toComplie = ciclesCompiler.convertToCpp(toComplie);
-            Mavenproject1.jTextArea2.setText(toComplie);
+            toCompile = functionsComplier.pseudoToCpp(builder.toString());
+            toCompile = variablesCompiler.processString(toCompile);
+            toCompile = conditionalStructuresCompiler.convertToCpp(toCompile);
+            toCompile = logicalOperatorsCompiler.convertToCpp(toCompile);
+            toCompile = ciclesCompiler.convertToCpp(toCompile);
+            Mavenproject1.jTextArea2.setText(toCompile);
 
-            Files.write(compiled.toPath(), toComplie.getBytes());
+            Files.write(compiled.toPath(), toCompile.getBytes());
             try {
                 FileWriter writer = new FileWriter(compiled);
-                writer.write(toComplie);
+                writer.write(toCompile);
                 writer.close();
             } catch (IOException e) {
                 e.printStackTrace();

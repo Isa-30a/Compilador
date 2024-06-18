@@ -107,7 +107,7 @@ public class ConectToStringTxt {
                 if (line.contains("HASTA")) {
                     int hastaIndex = processedLine.indexOf("HASTA");
                     if (hastaIndex != -1) {
-                        processedLine.insert(hastaIndex, "; ");
+                        processedLine.insert(hastaIndex, " ");
                     }
                 } else {
                     String[] palabras = line.split(" ");
