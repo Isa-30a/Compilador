@@ -309,14 +309,16 @@ public class QuickTerminal {
     }
 
     // Detecta el sistema operativo y determina el shell adecuado
-    private String getShellCommand() {
+    private List<String> getShellCommand() {
 
-        String osName = System.getProperty("os.name").toLowerCase();
-        if (osName.contains("win")) {
-            return "cmd.exe";
-        } else {
-            return "/bin/bash";
-        }
+      String osName = System.getProperty("os.name").toLowerCase();
+      if (osName.contains("win")) {
+        return Arrays.asList("cmd.exe", "/c");
+      } else if (osName.contains("mac")) {
+        return Arrays.asList("/bin/zsh", "-c");  // Usar zsh por defecto en macOS
+      } else {
+        return Arrays.asList("/bin/bash", "-c");  // Usar bash en otros sistemas Unix
+      }
     }
 
     // Implementación actualizada de ProcessExecutor
@@ -329,13 +331,9 @@ public class QuickTerminal {
 
         public ProcessExecutor(CommandListener listener, List<String> cmds) {
             this.listener = listener;
-            String shell = getShellCommand();
-            this.cmds = new ArrayList<>();
-            this.cmds.add(shell);
-            if (shell.equals("cmd.exe")) {
-                this.cmds.add("/c");
-            }
-            this.cmds.addAll(cmds);
+            List<String> shellCommand = getShellCommand();
+            this.cmds = new ArrayList<>(shellCommand);
+            this.cmds.add(String.join(" ", cmds));
             start();
         }
 

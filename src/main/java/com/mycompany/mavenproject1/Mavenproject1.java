@@ -345,6 +345,7 @@ public class Mavenproject1 extends javax.swing.JFrame {
               double maxWeight = 0; // Peso máximo para maximizar el split
               splitPane.setDividerLocation(10);
               splitPane.revalidate();
+              // System.out.println("click max");
           }
         });
 
@@ -369,6 +370,7 @@ public class Mavenproject1 extends javax.swing.JFrame {
              splitPane.setResizeWeight(maxWeight); // Establecer el peso del resize para maximizar el split
              splitPane.setDividerLocation(ventana.getSize().height-100);
              System.out.println(ventana.getSize().height-100);
+             // System.out.println("click min");
           }
         });
 
