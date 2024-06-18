@@ -44,7 +44,10 @@ public class QuickTerminal {
         String salidaPath = ruta + File.separator + nombreSinExtension + ".exe";
     
         // Reemplazar las barras inclinadas con barras invertidas dobles
-        salidaPath = salidaPath.replace("/", "\\\\");
+        String osName = System.getProperty("os.name").toLowerCase();
+        if (osName.contains("win")) {
+          salidaPath = salidaPath.replace("/", "\\\\");
+        } 
     
         String comandoCompilacion = "g++ -o " + salidaPath + " " + nombreArchivoCpp;
     
@@ -89,16 +92,20 @@ public class QuickTerminal {
     
         // Construir la ruta del archivo ejecutable generado
         String salidaPath = ruta + File.separator + nombreSinExtension + ".exe";
-        salidaPath = salidaPath.replace("/", "\\\\");
-    
+
+        String osName = System.getProperty("os.name").toLowerCase();
+        if (osName.contains("win")) {
+          salidaPath = salidaPath.replace("/", "\\\\");
+        } 
+            
         ejecutarCpp(salidaPath);
     }
 
     public void ejecutar(File nombreArchivoCpp) {
-        // String rutaArchivo = new File("").getAbsolutePath() + "/helloword.cpp";
-        // File archivoPrueba = new File(rutaArchivo);
-        // compilarYEjecutar(archivoPrueba);
-        compilarYEjecutar(nombreArchivoCpp);
+        String rutaArchivo = new File("").getAbsolutePath() + "/temp.cpp";
+        File archivoPrueba = new File(rutaArchivo);
+        compilarYEjecutar(archivoPrueba);
+        // compilarYEjecutar(nombreArchivoCpp);
     }
 
     ConsolePane console;
