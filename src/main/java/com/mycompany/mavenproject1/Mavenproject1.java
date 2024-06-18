@@ -337,8 +337,9 @@ public class Mavenproject1 extends javax.swing.JFrame {
           public void mouseClicked(MouseEvent e) {
               double maxWeight = 0; // Peso máximo para maximizar el split
               splitPane.setResizeWeight(maxWeight); // Establecer el peso del resize para maximizar el split
+              splitPane.revalidate(); 
+              System.out.println("Click en maximizar");
           }
-
         });
 
         minimizeButton.addMouseListener(new MouseAdapter() {
@@ -359,6 +360,8 @@ public class Mavenproject1 extends javax.swing.JFrame {
           public void mouseClicked(MouseEvent e) {
              double maxWeight = 1; // Peso máximo para maximizar el split
             splitPane.setResizeWeight(maxWeight); // Establecer el peso del resize para maximizar el split
+            splitPane.revalidate();
+            System.out.println("Click en minimizar");
           }
         });
 
