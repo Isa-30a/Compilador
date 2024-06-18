@@ -31,6 +31,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextPane;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
@@ -137,12 +138,15 @@ public class Mavenproject1 extends javax.swing.JFrame {
         setTitle("Compilador");
         setLocationByPlatform(true);
 
-        jTextArea2 = new JTextArea();
-        jTextPane1 = new LiveKeywordHighlighter();
+        // jTextArea2 = new LiveKeywordHighlighter("paper-color-cpp");
+        jTextArea2 = new JTextPane();
+        jTextPane1 = new LiveKeywordHighlighter("");
      
         jScrollPane2.setAutoscrolls(true);
 
         jTextPane1.setEditable(true); // Si quieres que sea editable
+        jTextArea2.setEditable(true);
+
         NumeroLinea linea = new NumeroLinea(jTextPane1);
 
         // jTextPane1.setColumns(20);
@@ -153,11 +157,11 @@ public class Mavenproject1 extends javax.swing.JFrame {
         jScrollPane1.setViewportView(jTextPane1);
         
 
-        jTextArea2.setEditable(false);
-        jTextArea2.setColumns(20);
-        jTextArea2.setLineWrap(true);
-        jTextArea2.setRows(5);
-        jTextArea2.setWrapStyleWord(true);
+        
+        // jTextArea2.setColumns(20);
+        // jTextArea2.setLineWrap(true);
+        // jTextArea2.setRows(5);
+        // jTextArea2.setWrapStyleWord(true);
         jTextArea2.setFont(new Font("RobotoMono-Regular", Font.PLAIN, 14));
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         Dimension maxSize = new Dimension(screenSize.width, screenSize.height);
@@ -561,7 +565,7 @@ public class Mavenproject1 extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTextPane jTextPane1;
-    public static javax.swing.JTextArea jTextArea2;
+    public static JTextPane jTextArea2;
     public static JMenu archive = new JMenu("untitled.tovar");
 
     // Solo es de apoyo
@@ -583,7 +587,7 @@ public class Mavenproject1 extends javax.swing.JFrame {
 
     public static void writeToCppField(String code){
         String formattedCode = CppFormatter.formatCode(code);
-        jTextArea2.setText(code);
+        jTextArea2.setText(formattedCode);
     }
 
     private File obtenerArchivo()
