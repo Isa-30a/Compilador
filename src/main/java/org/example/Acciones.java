@@ -18,6 +18,7 @@ import compiladores.functions.FunctionsCompiler;
 import compiladores.ciclos.PseudocodeProcessorCiclos;
 import compiladores.condicionales.IfElseConverter;
 import compiladores.condicionales.LogicalOperators;
+import compiladores.inputOutput.cooking;
 import compiladores.DeclarationAndAssignment.translatorDeclarationAssignment.ConectToStringTxt;
 public class Acciones {
 
@@ -171,6 +172,7 @@ public class Acciones {
             ConectToStringTxt variablesCompiler = new ConectToStringTxt();
             IfElseConverter conditionalStructuresCompiler = new IfElseConverter();
             LogicalOperators logicalOperatorsCompiler = new LogicalOperators();
+            cooking inputOutputCompiler = new cooking();
           
             String linea;
             String toCompile;
@@ -182,6 +184,7 @@ public class Acciones {
             toCompile = conditionalStructuresCompiler.convertToCpp(toCompile);
             toCompile = logicalOperatorsCompiler.convertToCpp(toCompile);
             toCompile = ciclesCompiler.convertToCpp(toCompile);
+            toCompile = inputOutputCompiler.inputOutputTraductor(toCompile);
             Mavenproject1.jTextArea2.setText(toCompile);
 
             Files.write(compiled.toPath(), toCompile.getBytes());
