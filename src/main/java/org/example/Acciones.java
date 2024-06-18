@@ -188,6 +188,7 @@ public class Acciones {
           toCompile = logicalOperatorsCompiler.convertToCpp(toCompile);
           toCompile = ciclesCompiler.convertToCpp(toCompile);
           toCompile = inputOutputCompiler.inputOutputTraductor(toCompile);
+          toCompile = "#include<iostream>\n#include<string.h>\n\nusing namespace std;\n\n".concat(toCompile);
           
           // Actualiza el JTextArea con el contenido compilado
           // Mavenproject1.jTextArea2.setText(toCompile);
