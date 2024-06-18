@@ -179,10 +179,10 @@ public class Acciones {
             toComplie = functionsComplier.pseudoToCpp(builder.toString());
             toComplie = variablesCompiler.translate(toComplie);
             toComplie = IfElseConverter.convertSwitchCase(toComplie);
-            toComplie = IfElseConverter.convertToCpp(toComplie);
             toComplie = LogicalOperators.convertToCpp(toComplie);
+            toComplie = IfElseConverter.convertToCpp(toComplie);
             toComplie = ciclesCompiler.convertToCpp(toComplie);
-            //System.out.println(toComplie);
+            
             Mavenproject1.jTextArea2.setText(toComplie);
 
             Files.write(compiled.toPath(), toComplie.getBytes());
