@@ -1,5 +1,5 @@
 
-package compiladores.DeclarationAndAssignment.machines.turingMachines;
+package compiladores.DeclarationAndAssignment.machines.turingMachines.basics;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,12 +7,15 @@ import java.util.List;
 public class TuringMachineAssignment {
 
     public String translateAssignment(String pseudocode) {
+
         String[] tokens = pseudocode.split("\\s*=\\s*");
         if (tokens.length != 2) {
             return "El pseudocódigo no es válido.";
         }
+
         String variable = tokens[0].trim();
         String value = tokens[1].trim();
+
         return variable + " = " + translateValue(value) + ";";
     }
 
@@ -70,11 +73,5 @@ public class TuringMachineAssignment {
         return elements.toArray(new String[0]);
     }
 }
-
-
-
-
-
-
 
 

@@ -169,8 +169,9 @@ public class Acciones {
             FunctionsCompiler functionsComplier = new FunctionsCompiler();
             PseudocodeProcessorCiclos ciclesCompiler = new PseudocodeProcessorCiclos();
             PseudocodeTranslator variablesCompiler = new PseudocodeTranslator();
-            
-
+            IfElseConverter conditionalStructuresCompiler = new IfElseConverter();
+            LogicalOperators logicalOperatorsCompiler = new LogicalOperators();
+          
             String linea;
             String toComplie;
             while((linea = reader.readLine()) != null){
@@ -178,11 +179,9 @@ public class Acciones {
             }
             toComplie = functionsComplier.pseudoToCpp(builder.toString());
             toComplie = variablesCompiler.translate(toComplie);
-            toComplie = IfElseConverter.convertSwitchCase(toComplie);
-            toComplie = LogicalOperators.convertToCpp(toComplie);
-            toComplie = IfElseConverter.convertToCpp(toComplie);
+            toComplie = conditionalStructuresCompiler.convertToCpp(toComplie);
+            toComplie = logicalOperatorsCompiler.convertToCpp(toComplie);
             toComplie = ciclesCompiler.convertToCpp(toComplie);
-            
             Mavenproject1.jTextArea2.setText(toComplie);
 
             Files.write(compiled.toPath(), toComplie.getBytes());

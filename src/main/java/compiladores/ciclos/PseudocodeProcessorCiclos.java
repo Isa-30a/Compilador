@@ -56,7 +56,7 @@ public class PseudocodeProcessorCiclos {
     }
 
     private String convertForLoops(String pseudocode) {
-        Pattern pattern = Pattern.compile("(?sm)PARA\\s*([^HAS]+)HASTA\\s*([^EN]+)EN\\s*([^\\s]+)\\s*HACER:\\s*(.*?)\\s*FIN PARA");
+        Pattern pattern = Pattern.compile("(?sm)PARA\\s+(.*?)\\s+HASTA\\s+(.*?)\\s+EN\\s+(.*?)\\s+HACER:\\s+(.*?)\\s+FIN PARA");
         Matcher matcher = pattern.matcher(pseudocode);
         StringBuffer sb = new StringBuffer();
         while (matcher.find()) {
@@ -64,33 +64,33 @@ public class PseudocodeProcessorCiclos {
             String condition = matcher.group(2).trim();
             String update = matcher.group(3).trim();
             String body = modifyDoWhileBody(matcher.group(4).trim());
-            matcher.appendReplacement(sb, "for (" + initialization + "; " + condition + "; " + update + ") {\n" + body + "\n}");
+            matcher.appendReplacement(sb, "for(" + initialization + "; " + condition + "; " + update + "){\n" + body + "\n}");
         }
         matcher.appendTail(sb);
         return sb.toString();
     }
 
     private String convertWhileLoops(String pseudocode) {
-        Pattern pattern = Pattern.compile("(?s)MIENTRAS\\s*([^HAC)]+)HACER:\\s*(.*?)\\s*FIN MIENTRAS");
+        Pattern pattern = Pattern.compile("(?sm)MIENTRAS\\s+(.*?)\\s+HACER:\\s+(.*?)\\s+FIN MIENTRAS");
         Matcher matcher = pattern.matcher(pseudocode);
         StringBuffer sb = new StringBuffer();
         while (matcher.find()) {
             String condition = matcher.group(1).trim();
             String body = modifyDoWhileBody(matcher.group(2).trim());
-            matcher.appendReplacement(sb, "while (" + condition + ") {\n" + body + "\n}");
+            matcher.appendReplacement(sb, "while (" + condition + "){\n" + body + "\n}");
         }
         matcher.appendTail(sb);
         return sb.toString();
     }
 
     private String convertDoWhileLoops(String pseudocode) {
-        Pattern pattern = Pattern.compile("(?s)REPETIR:\\s*(.*?)\\s*MIENTRAS\\s*([^\\n]+)");
+        Pattern pattern = Pattern.compile("(?sm)REPETIR:\\s+(.*?)\\s+MIENTRAS\\s+(.*?)(\\r|$)");
         Matcher matcher = pattern.matcher(pseudocode);
         StringBuffer sb = new StringBuffer();
         while (matcher.find()) {
             String body = modifyDoWhileBody(matcher.group(1).trim());
             String condition = matcher.group(2).trim();
-            matcher.appendReplacement(sb, "do {\n" + body + "\n} while (" + condition + ");");
+            matcher.appendReplacement(sb, "do{\n" + body + "\n} while(" + condition + ");");
         }
         matcher.appendTail(sb);
         return sb.toString();

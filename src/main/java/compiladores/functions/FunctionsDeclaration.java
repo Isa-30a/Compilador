@@ -9,15 +9,10 @@
 package compiladores.functions;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 import java.util.regex.Pattern;
 
 public class FunctionsDeclaration {
-
-    private Queue<String> errorQueue = new LinkedList<>();
-
     public String declare(String chain, List<String> array) {
         FunctionsUtils v = new FunctionsUtils();
         CallFunction c = new CallFunction();
@@ -38,9 +33,6 @@ public class FunctionsDeclaration {
                         newValue.add(v.types(splitChain[splitChain.length - 1]));
                         newValue.add(" ");
 
-                        if (!c.call(splitChain[1], array).equals("Syntax Error")) {
-                            errorQueue.offer("This function's been already created");
-                        }
                         newValue.add(splitChain[1] + "(");
                         array.add(splitChain[1]);
                         for (int i = 2; i < splitChain.length; i++) {
@@ -67,9 +59,5 @@ public class FunctionsDeclaration {
             result = String.join("", newValue.toArray(new String[0]));
             return result;
         }
-    }
-
-    public Queue<String> getErrorQueue() {
-        return errorQueue;
     }
 }
