@@ -14,12 +14,12 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.mycompany.mavenproject1.Mavenproject1;
 
-import compiladores.functions.FunctionsCompiler;
+import compiladores.DeclarationAndAssignment.translatorDeclarationAssignment.ConectToStringTxt;
 import compiladores.ciclos.PseudocodeProcessorCiclos;
 import compiladores.condicionales.IfElseConverter;
 import compiladores.condicionales.LogicalOperators;
+import compiladores.functions.FunctionsCompiler;
 import compiladores.inputOutput.cooking;
-import compiladores.DeclarationAndAssignment.translatorDeclarationAssignment.ConectToStringTxt;
 public class Acciones {
 
     static {
@@ -185,6 +185,7 @@ public class Acciones {
             toCompile = logicalOperatorsCompiler.convertToCpp(toCompile);
             toCompile = ciclesCompiler.convertToCpp(toCompile);
             toCompile = inputOutputCompiler.inputOutputTraductor(toCompile);
+            toCompile = "#include <iostream>\n#include <string.h>\nusing namespace std;\n".concat(toCompile);
             Mavenproject1.jTextArea2.setText(toCompile);
 
             Files.write(compiled.toPath(), toCompile.getBytes());
