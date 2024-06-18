@@ -155,7 +155,12 @@ public class QuickTerminal {
 
                     int range = textArea.getCaretPosition() - userInputStart;
                     try {
-                        String text = textArea.getText(userInputStart, range).trim().replace("/", "\\\\");
+                        String text = ""; 
+                        if(System.getProperty("os.name").toLowerCase().contains("win")){
+                            text = textArea.getText(userInputStart, range).trim().replace("/", "\\\\");
+                        }else{
+                            text = textArea.getText(userInputStart, range).trim();
+                        }
                         System.out.println("[" + text + "]");
                         userInputStart += range;
                         if (!cmd.isRunning()) {
