@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -94,7 +95,7 @@ public class QuickTerminal {
     }
 
     public void ejecutar(File nombreArchivoCpp) {
-        // String rutaArchivo = new File("").getAbsolutePath() + "/resources/img/mi_archivo.cpp";
+        // String rutaArchivo = new File("").getAbsolutePath() + "/helloword.cpp";
         // File archivoPrueba = new File(rutaArchivo);
         // compilarYEjecutar(archivoPrueba);
         compilarYEjecutar(nombreArchivoCpp);
@@ -384,14 +385,22 @@ public class QuickTerminal {
 
         @Override
         public void run() {
-            try {
-                int value = -1;
-                while ((value = is.read()) != -1) {
-                    listener.commandOutput(Character.toString((char) value));
-                }
-            } catch (IOException exp) {
-                exp.printStackTrace();
+             try {
+            byte[] buffer = new byte[1024]; // Tamaño del búfer
+            int bytesRead;
+            while ((bytesRead = is.read(buffer)) != -1) {
+                String text = new String(buffer, 0, bytesRead, StandardCharsets.UTF_8);
+                listener.commandOutput(text);
             }
+        } catch (IOException exp) {
+            exp.printStackTrace();
+        } finally {
+            try {
+                is.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         }
     }
 

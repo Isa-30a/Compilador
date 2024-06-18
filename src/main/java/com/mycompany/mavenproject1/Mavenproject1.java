@@ -317,7 +317,7 @@ public class Mavenproject1 extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 //quickTerminal.clearTextArea(); //Mal implementado, demasiado confuso
-                // quickTerminal.ejecutar(new File(""));
+                quickTerminal.ejecutar(new File(""));
                 // Acción a realizar cuando se hace clic en el botón de limpiar
             }
         });
@@ -379,7 +379,7 @@ public class Mavenproject1 extends javax.swing.JFrame {
         headerPanel.add(consoleLabel, BorderLayout.WEST);
   
         // Agregar los botones al headerPanel
-        labelPanel.add(clearButton);
+        // labelPanel.add(clearButton);
         labelPanel.add(minimizeButton);
         labelPanel.add(maximizeButton);
 
