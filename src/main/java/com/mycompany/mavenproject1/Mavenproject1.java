@@ -4,28 +4,44 @@
  */
 package com.mycompany.mavenproject1;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextPane;
 import javax.swing.SwingConstants;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
+
 import org.example.Acciones;
 import org.example.utils.CppFormatter;
 import org.example.utils.FontLoader;
 import org.example.utils.LiveKeywordHighlighter;
 import org.example.utils.NumeroLinea;
+import org.example.utils.QuickTerminal;
 
 /**
  *
@@ -41,8 +57,6 @@ public class Mavenproject1 extends javax.swing.JFrame {
         initDesign();
     }
 
-
-    
 
     private void initDesign() {
 
@@ -124,12 +138,15 @@ public class Mavenproject1 extends javax.swing.JFrame {
         setTitle("Compilador");
         setLocationByPlatform(true);
 
-        jTextArea2 = new JTextArea();
-        jTextPane1 = new LiveKeywordHighlighter();
+        // jTextArea2 = new LiveKeywordHighlighter("paper-color-cpp");
+        jTextArea2 = new JTextPane();
+        jTextPane1 = new LiveKeywordHighlighter("");
      
         jScrollPane2.setAutoscrolls(true);
 
         jTextPane1.setEditable(true); // Si quieres que sea editable
+        jTextArea2.setEditable(true);
+
         NumeroLinea linea = new NumeroLinea(jTextPane1);
 
         // jTextPane1.setColumns(20);
@@ -140,11 +157,11 @@ public class Mavenproject1 extends javax.swing.JFrame {
         jScrollPane1.setViewportView(jTextPane1);
         
 
-        jTextArea2.setEditable(false);
-        jTextArea2.setColumns(20);
-        jTextArea2.setLineWrap(true);
-        jTextArea2.setRows(5);
-        jTextArea2.setWrapStyleWord(true);
+        
+        // jTextArea2.setColumns(20);
+        // jTextArea2.setLineWrap(true);
+        // jTextArea2.setRows(5);
+        // jTextArea2.setWrapStyleWord(true);
         jTextArea2.setFont(new Font("RobotoMono-Regular", Font.PLAIN, 14));
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         Dimension maxSize = new Dimension(screenSize.width, screenSize.height);
@@ -154,27 +171,28 @@ public class Mavenproject1 extends javax.swing.JFrame {
         jScrollPane3.setViewportView(jTextArea2);
 
 
+        // Ajuste de diseño de jPanel1
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(34, 34, 34)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 325, Short.MAX_VALUE)
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 326, Short.MAX_VALUE)
-                .addGap(35, 35, 35))
-        );
+                .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addGap(34,34,34)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 325, Short.MAX_VALUE)
+                    .addGap(18, 18, 18)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 326, Short.MAX_VALUE)
+                    .addGap(35,35,35))
+                );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 604, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1))
-                .addContainerGap())
+                .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jScrollPane1)
+                        .addComponent(jScrollPane3))
+                    .addContainerGap())
         );
 
+        
         JLabel labelPseudo = new JLabel("Pseudo");
         JLabel labelCpp = new JLabel("C++");
 
@@ -231,7 +249,161 @@ public class Mavenproject1 extends javax.swing.JFrame {
             }
         });
 
-        jScrollPane2.setViewportView(jPanel1);
+
+
+          //jScrollPane2.setViewportView(jPanel1);
+      
+        int paddingSize = 10; // Tamaño del padding en píxeles
+        Border paddingBorder = BorderFactory.createEmptyBorder(paddingSize, 0, 0, 0);
+        jPanel1.setBorder(paddingBorder);
+            
+         // Obtener el panel de consola
+        JPanel consolePanel = new JPanel(); 
+
+        // Crear el JSplitPane y agregar el jPanel1 y el consolePanel
+        splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, jPanel1, consolePanel);
+        splitPane.setResizeWeight(1); // Set the resize weight to allocate more space to the text area
+
+        // Ajusta las configuraciones necesarias para el jPanel1 y el consolePanel
+        jPanel1.setMinimumSize(new Dimension(300, 10));
+        consolePanel.setMinimumSize(new Dimension(300, 30));
+        consolePanel.setSize(100,30);
+    
+        
+        // Crear botones para el header
+        
+
+        // Obtener la ruta del archivo de icono
+        String path = new File("").getAbsolutePath() + "/resources/img/";
+
+        iconConsola = new ImageIcon(path + "terminal.png");
+        iconClear = new ImageIcon(path + "clear.png");
+        iconMax = new ImageIcon(path + "max.png");
+        iconMin = new ImageIcon(path + "min.png");
+        iconClear_hover = new ImageIcon(path + "clear_hover.png");
+        iconMax_hover = new ImageIcon(path + "max_hover.png");
+        iconMin_hover = new ImageIcon(path + "min_hover.png");
+       
+        try{ 
+          iconClear = new ImageIcon(iconClear.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH)); 
+          iconMax = new ImageIcon(iconMax.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH));
+          iconMin = new ImageIcon(iconMin.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH));
+          iconClear_hover = new ImageIcon(iconClear_hover.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH)); 
+          iconMax_hover = new ImageIcon(iconMax_hover.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH));
+          iconMin_hover = new ImageIcon(iconMin_hover.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH));
+          iconConsola = new ImageIcon(iconConsola.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH));
+
+        }catch(Exception e){
+          System.out.println(e);
+        }
+
+        JLabel clearButton = new JLabel(iconClear);
+        JLabel maximizeButton = new JLabel(iconMax);
+        JLabel minimizeButton = new JLabel(iconMin);
+        JLabel consoleLabel = new JLabel(iconConsola);
+        
+        ventana = this;
+
+        clearButton.addMouseListener(new MouseAdapter() {
+  
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                    // Cambiar la apariencia cuando el mouse entra al JLabel
+                clearButton.setIcon(iconClear_hover); // Cambia el icono por otro con efecto hover
+            }
+        
+            @Override
+            public void mouseExited(MouseEvent e) {
+                    // Restaurar la apariencia cuando el mouse sale del JLabel
+                clearButton.setIcon(iconClear); // Restaura el icono original
+            }
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                //quickTerminal.clearTextArea(); //Mal implementado, demasiado confuso
+                quickTerminal.ejecutar(new File(""));
+                // Acción a realizar cuando se hace clic en el botón de limpiar
+            }
+        });
+
+        maximizeButton.addMouseListener(new MouseAdapter() {
+  
+          @Override
+          public void mouseEntered(MouseEvent e) {
+              // Cambiar la apariencia cuando el mouse entra al JLabel
+              maximizeButton.setIcon(iconMax_hover); // Cambia el icono por otro con efecto hover
+          }
+
+          @Override
+          public void mouseExited(MouseEvent e) {
+              // Restaurar la apariencia cuando el mouse sale del JLabel
+              maximizeButton.setIcon(iconMax); // Restaura el icono original
+          }
+
+          @Override
+          public void mouseClicked(MouseEvent e) {
+              double maxWeight = 0; // Peso máximo para maximizar el split
+              splitPane.setDividerLocation(10);
+              splitPane.revalidate();
+              // System.out.println("click max");
+          }
+        });
+
+        minimizeButton.addMouseListener(new MouseAdapter() {
+  
+          @Override
+          public void mouseEntered(MouseEvent e) {
+              // Cambiar la apariencia cuando el mouse entra al JLabel
+              minimizeButton.setIcon(iconMin_hover); // Cambia el icono por otro con efecto hover
+          }
+
+          @Override
+          public void mouseExited(MouseEvent e) {
+              // Restaurar la apariencia cuando el mouse sale del JLabel
+
+              minimizeButton.setIcon(iconMin); // Restaura el icono original
+          }
+
+          @Override
+          public void mouseClicked(MouseEvent e) {
+             double maxWeight = 1; // Peso máximo para maximizar el split
+             splitPane.setResizeWeight(maxWeight); // Establecer el peso del resize para maximizar el split
+             splitPane.setDividerLocation(ventana.getSize().height-100);
+             System.out.println(ventana.getSize().height-100);
+             // System.out.println("click min");
+          }
+        });
+
+
+        JPanel headerPanel = new JPanel(new BorderLayout());
+
+        // Crear un JPanel para el header con botones
+        JPanel labelPanel = new JPanel();
+        labelPanel.setLayout(new FlowLayout(FlowLayout.RIGHT)); // Alinea los botones a la izquierda
+        
+  
+        headerPanel.add(consoleLabel, BorderLayout.WEST);
+  
+        // Agregar los botones al headerPanel
+        // labelPanel.add(clearButton);
+        labelPanel.add(minimizeButton);
+        labelPanel.add(maximizeButton);
+
+        headerPanel.add(labelPanel, BorderLayout.EAST);
+
+        // Agregar el headerPanel al consolePanel en la región norte
+        consolePanel.setLayout(new BorderLayout());
+        consolePanel.add(headerPanel, BorderLayout.NORTH);
+        
+        quickTerminal = new QuickTerminal();
+
+        consolePanel.add(quickTerminal.getJPanelTerminal(), BorderLayout.CENTER);
+        consolePanel.setBackground(Color.WHITE);
+        headerPanel.setBackground(Color.WHITE);
+        labelPanel.setBackground(Color.WHITE);
+       
+        consoleLabel.setBorder(new EmptyBorder(0, 10, 0, 0));
+        labelPanel.setBorder(new EmptyBorder(0,0,0,10));
 
         jMenu1.setText("File");
         jMenu1.setIconTextGap(0);
@@ -292,18 +464,18 @@ public class Mavenproject1 extends javax.swing.JFrame {
         jMenuBar1.add(jMenu3);
 
         setJMenuBar(jMenuBar1);
-
+        
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jScrollPane2)
+                .addComponent(splitPane)
                 .addGap(0, 0, 0))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 535, Short.MAX_VALUE)
+            .addComponent(splitPane, javax.swing.GroupLayout.DEFAULT_SIZE, 535, Short.MAX_VALUE)
         );
 
         pack();
@@ -395,13 +567,29 @@ public class Mavenproject1 extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTextPane jTextPane1;
-    public static javax.swing.JTextArea jTextArea2;
+    public static JTextPane jTextArea2;
     public static JMenu archive = new JMenu("untitled.tovar");
+
+    // Solo es de apoyo
+    ImageIcon iconConsola;
+    ImageIcon iconClear;
+    ImageIcon iconMax;
+    ImageIcon iconMin;
+    ImageIcon iconClear_hover;
+    ImageIcon iconMax_hover;
+    ImageIcon iconMin_hover;
+
+    JSplitPane splitPane;
+    public static QuickTerminal quickTerminal;
+
+    JFrame ventana;
+
+
     // End of variables declaration//GEN-END:variables
 
     public static void writeToCppField(String code){
         String formattedCode = CppFormatter.formatCode(code);
-        jTextArea2.setText(code);
+        jTextArea2.setText(formattedCode);
     }
 
     private File obtenerArchivo()

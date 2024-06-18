@@ -16,13 +16,13 @@ public class LiveKeywordHighlighter extends JTextPane implements DocumentListene
 
     private static final Color DEFAULT_COLOR = Color.black;
 
-    private final AttributeSet defaultAttrSet;
+    private AttributeSet defaultAttrSet;
     private final Map<String, AttributeSet> keywordAttrMap;
 
     private final Set<String> keywords;
 
     
-    public LiveKeywordHighlighter() {
+    public LiveKeywordHighlighter(String type) {
         super(); // Llama al constructor de UndoRedo
         StyleContext sc = StyleContext.getDefaultStyleContext();
         //defaultAttrSet = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, DEFAULT_COLOR);
@@ -36,53 +36,253 @@ public class LiveKeywordHighlighter extends JTextPane implements DocumentListene
         // Creamos un mapa de palabras clave y sus respectivos atributos de estilo (colores)
         keywordAttrMap = new HashMap<>();
 
-        // QUIET LIGHT
-        keywordAttrMap.put("ALGORITMO", setStyle(new Color(102, 102, 204), true)); // Azul
-        keywordAttrMap.put("ENTERO", setStyle(new Color(0, 128, 0), false)); // Verde
-        keywordAttrMap.put("ARREGLO", setStyle(new Color(43, 145, 175), false)); // Azul claro
-        // keywordAttrMap.put("MATRIZ", setStyle(new Color(97, 50, 170), false)); // Morado
-        keywordAttrMap.put("PARA", setStyle(new Color(102, 102, 204), false)); // Azul
-        keywordAttrMap.put("HASTA", setStyle(new Color(102, 102, 204), false)); // Azul
-        keywordAttrMap.put("HACER", setStyle(new Color(102, 102, 204), false)); // Azul
-        keywordAttrMap.put("EN", setStyle(new Color(102, 102, 204), false)); // Azul
-        keywordAttrMap.put("ESCRIBIR", setStyle(new Color(0, 128, 0), false)); // Verde
-        keywordAttrMap.put("FIN", setStyle(new Color(102, 102, 204), true)); // Azul
-        keywordAttrMap.put("SEGUN", setStyle(new Color(102, 102, 204), false)); // Azul
-        keywordAttrMap.put("SI", setStyle(new Color(102, 102, 204), false)); // Azul
-        keywordAttrMap.put("NINGUNO", setStyle(new Color(43, 145, 175), false)); // Azul claro
-        defaultAttrSet = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, new Color(64, 64, 64));
+        
 
-        // ATOM ONE LIGHT
-        // keywordAttrMap.put("ALGORITMO", setStyle(new Color(86, 156, 214), true)); // Azul claro
-        // keywordAttrMap.put("ENTERO", setStyle(new Color(86, 182, 194), true)); // Verde azulado
-        // keywordAttrMap.put("ARREGLO", setStyle(new Color(198, 120, 221), true)); // Violeta
-        // keywordAttrMap.put("MATRIZ", setStyle(new Color(86, 182, 194), true)); // Verde azulado
-        // keywordAttrMap.put("PARA", setStyle(new Color(86, 156, 214), true)); // Azul claro
-        // keywordAttrMap.put("HASTA", setStyle(new Color(86, 156, 214), true)); // Azul claro
-        // keywordAttrMap.put("ESCRIBIR", setStyle(new Color(128, 128, 128), false)); // Gris medio
-        // keywordAttrMap.put("FIN", setStyle(new Color(86, 156, 214), true)); // Azul claro
-        // keywordAttrMap.put("SEGUN", setStyle(new Color(86, 156, 214), true)); // Azul claro
-        // keywordAttrMap.put("SI", setStyle(new Color(86, 156, 214), true)); // Azul claro
-        // keywordAttrMap.put("NINGUNO", setStyle(new Color(198, 120, 221), true)); // Violeta
-        // keywordAttrMap.put("MALO", setStyle(new Color(204, 0, 0), true)); // Rojo
-        // defaultAttrSet = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, new Color(28, 28, 28));
+        switch (type) {
+            default:
+                keywordAttrMap.put("LEER", setStyle(new Color(204, 102, 0), true)); // Naranja
+                keywordAttrMap.put("ESCRIBIR", setStyle(new Color(0, 102, 204), true)); // Azul
+                keywordAttrMap.put("INICIO", setStyle(new Color(204, 0, 102), true)); // Rosa
+                keywordAttrMap.put("FIN INICIO", setStyle(new Color(204, 0, 102), true)); // Rosa
+                keywordAttrMap.put("FUNCION", setStyle(new Color(102, 0, 102), true)); // Morado oscuro
+                keywordAttrMap.put("RETORNA", setStyle(new Color(102, 0, 102), true)); // Morado oscuro
+                keywordAttrMap.put("FIN FUNCION", setStyle(new Color(102, 0, 102), true)); // Morado oscuro
+                keywordAttrMap.put("FIN", setStyle(new Color(102, 0, 102), true)); // Morado oscuro
+                keywordAttrMap.put("Y", setStyle(new Color(51, 153, 102), false)); // Verde
+                keywordAttrMap.put("O", setStyle(new Color(51, 153, 102), false)); // Verde
+                keywordAttrMap.put("!", setStyle(new Color(51, 153, 102), false)); // Verde
+                keywordAttrMap.put(":", setStyle(new Color(0, 153, 153), false)); // Turquesa
+                keywordAttrMap.put(">", setStyle(new Color(0, 153, 153), false)); // Turquesa
+                keywordAttrMap.put("<", setStyle(new Color(0, 153, 153), false)); // Turquesa
+                keywordAttrMap.put("==", setStyle(new Color(0, 153, 153), false)); // Turquesa
+                keywordAttrMap.put("=", setStyle(new Color(0, 153, 153), false)); // Turquesa
+                keywordAttrMap.put(">=", setStyle(new Color(0, 153, 153), false)); // Turquesa
+                keywordAttrMap.put("<=", setStyle(new Color(0, 153, 153), false)); // Turquesa
+                keywordAttrMap.put("!=", setStyle(new Color(0, 153, 153), false)); // Turquesa
+                keywordAttrMap.put("SEGUN", setStyle(new Color(0, 102, 204), true)); // Azul
+                keywordAttrMap.put("SI", setStyle(new Color(0, 102, 204), true)); // Azul
+                keywordAttrMap.put("ENTONCES", setStyle(new Color(0, 102, 204), true)); // Azul
+                keywordAttrMap.put("FINSI", setStyle(new Color(0, 102, 204), true)); // Azul
+                keywordAttrMap.put("SINO", setStyle(new Color(0, 102, 204), true)); // Azul
+                keywordAttrMap.put("HACER", setStyle(new Color(0, 102, 204), true)); // Azul
+                keywordAttrMap.put("CASO", setStyle(new Color(0, 102, 204), true)); // Azul
+                keywordAttrMap.put("TERMINAR", setStyle(new Color(0, 102, 204), true)); // Azul
+                keywordAttrMap.put("DEFECTO", setStyle(new Color(0, 102, 204), true)); // Azul
+                keywordAttrMap.put("FIN SEGUN", setStyle(new Color(0, 102, 204), true)); // Azul
+                keywordAttrMap.put("REPETIR", setStyle(new Color(204, 102, 0), true)); // Naranja
+                keywordAttrMap.put("MIENTRAS", setStyle(new Color(204, 102, 0), true)); // Naranja
+                keywordAttrMap.put("PARA", setStyle(new Color(204, 102, 0), true)); // Naranja
+                keywordAttrMap.put("HASTA", setStyle(new Color(204, 102, 0), true)); // Naranja
+                keywordAttrMap.put("EN", setStyle(new Color(204, 102, 0), true)); // Naranja
+                keywordAttrMap.put("FIN MIENTRAS", setStyle(new Color(204, 102, 0), true)); // Naranja
+                keywordAttrMap.put("FIN PARA", setStyle(new Color(204, 102, 0), true)); // Naranja
+                keywordAttrMap.put("ENTERO", setStyle(new Color(0, 90, 0), false)); // Verde
+                keywordAttrMap.put("FLOTANTE", setStyle(new Color(0, 90, 0), false)); // Verde
+                keywordAttrMap.put("CARACTER", setStyle(new Color(0, 90, 0), false)); // Verde
+                keywordAttrMap.put("MATRIZ", setStyle(new Color(0, 90, 0), false)); // Verde
+                keywordAttrMap.put("BOOLEANO", setStyle(new Color(0, 90, 0), false)); // Verde
+                keywordAttrMap.put("VERDADERO", setStyle(new Color(0, 90, 0), false)); // Verde
+                keywordAttrMap.put("FALSO", setStyle(new Color(0, 90, 0), false)); // Verde
+                keywordAttrMap.put("NINGUNO", setStyle(new Color(30, 101, 122), false)); // Azul claro
+                defaultAttrSet = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, new Color(45, 45, 45)); // Gris Oscuro
 
-        //SOLARIZED LIGHT
-        // keywordAttrMap.put("ALGORITMO", setStyle(new Color(42, 161, 152), true)); // Solarized Light Cyan
+                break;
+        
+            case "quiet-light":
+                keywordAttrMap.put("LEER LÍNEA", setStyle(new Color(71, 107, 143), true)); // Azul Claro
+                keywordAttrMap.put("LEER", setStyle(new Color(71, 107, 143), false)); // Azul Claro
+                keywordAttrMap.put("ESCRIBIR", setStyle(new Color(71, 107, 143), false)); // Azul Claro
+        
+                keywordAttrMap.put("INICIO", setStyle(new Color(71, 143, 71), true)); // Verde Claro
+                keywordAttrMap.put("FIN INICIO", setStyle(new Color(71, 143, 71), false)); // Verde Claro
+        
+                keywordAttrMap.put("FUNCION", setStyle(new Color(143, 71, 107), true)); // Rosa Claro
+                keywordAttrMap.put("RETORNA", setStyle(new Color(143, 71, 107), false)); // Rosa Claro
+                keywordAttrMap.put("FIN FUNCION", setStyle(new Color(143, 71, 107), false)); // Rosa Claro
+        
+                keywordAttrMap.put("Y", setStyle(new Color(143, 107, 71), true)); // Naranja Claro
+                keywordAttrMap.put("O", setStyle(new Color(143, 107, 71), false)); // Naranja Claro
+                keywordAttrMap.put("!", setStyle(new Color(143, 107, 71), false)); // Naranja Claro
+                keywordAttrMap.put(">", setStyle(new Color(143, 107, 71), false)); // Naranja Claro
+                keywordAttrMap.put("<", setStyle(new Color(143, 107, 71), false)); // Naranja Claro
+                keywordAttrMap.put("==", setStyle(new Color(143, 107, 71), false)); // Naranja Claro
+                keywordAttrMap.put(">=", setStyle(new Color(143, 107, 71), false)); // Naranja Claro
+                keywordAttrMap.put("<=", setStyle(new Color(143, 107, 71), false)); // Naranja Claro
+                keywordAttrMap.put("!=", setStyle(new Color(143, 107, 71), false)); // Naranja Claro
+        
+                keywordAttrMap.put("SEGUN", setStyle(new Color(107, 107, 143), true)); // Azul Grisáceo
+                keywordAttrMap.put("SI", setStyle(new Color(107, 107, 143), false)); // Azul Grisáceo
+                keywordAttrMap.put("ENTONCES", setStyle(new Color(107, 107, 143), false)); // Azul Grisáceo
+                keywordAttrMap.put("FINSI", setStyle(new Color(107, 107, 143), false)); // Azul Grisáceo
+                keywordAttrMap.put("SINO", setStyle(new Color(107, 107, 143), false)); // Azul Grisáceo
+                keywordAttrMap.put("HACER", setStyle(new Color(107, 107, 143), false)); // Azul Grisáceo
+                keywordAttrMap.put("CASO", setStyle(new Color(107, 107, 143), false)); // Azul Grisáceo
+                keywordAttrMap.put("TERMINAR", setStyle(new Color(107, 107, 143), false)); // Azul Grisáceo
+                keywordAttrMap.put("DEFECTO", setStyle(new Color(107, 107, 143), false)); // Azul Grisáceo
+                keywordAttrMap.put("FIN SEGUN", setStyle(new Color(107, 107, 143), false)); // Azul Grisáceo
+        
+                keywordAttrMap.put("REPETIR", setStyle(new Color(107, 143, 107), true)); // Verde Grisáceo
+                keywordAttrMap.put("MIENTRAS", setStyle(new Color(107, 143, 107), false)); // Verde Grisáceo
+                keywordAttrMap.put("PARA", setStyle(new Color(107, 143, 107), false)); // Verde Grisáceo
+                keywordAttrMap.put("HASTA", setStyle(new Color(107, 143, 107), false)); // Verde Grisáceo
+                keywordAttrMap.put("HACER", setStyle(new Color(107, 143, 107), false)); // Verde Grisáceo
+                keywordAttrMap.put("EN", setStyle(new Color(107, 143, 107), false)); // Verde Grisáceo
+                keywordAttrMap.put("FIN MIENTRAS", setStyle(new Color(107, 143, 107), false)); // Verde Grisáceo
+                keywordAttrMap.put("FIN PARA", setStyle(new Color(107, 143, 107), false)); // Verde Grisáceo
+        
+                keywordAttrMap.put("ENTERO", setStyle(new Color(143, 143, 71), true)); // Amarillo Claro
+                keywordAttrMap.put("FLOTANTE", setStyle(new Color(143, 143, 71), false)); // Amarillo Claro
+                keywordAttrMap.put("CARACTER", setStyle(new Color(143, 143, 71), false)); // Amarillo Claro
+                keywordAttrMap.put("]", setStyle(new Color(143, 143, 71), false)); // Amarillo Claro
+                keywordAttrMap.put("[", setStyle(new Color(143, 143, 71), false)); // Amarillo Claro
+                keywordAttrMap.put("BOOLEANO", setStyle(new Color(143, 143, 71), false)); // Amarillo Claro
+                keywordAttrMap.put("VERDADERO", setStyle(new Color(143, 143, 71), false)); // Amarillo Claro
+                keywordAttrMap.put("FALSO", setStyle(new Color(143, 143, 71), false)); // Amarillo Claro
+        
+                defaultAttrSet = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, new Color(45, 45, 45)); // Gris Oscuro
+                break;
+        
+            case "quiet-light-cpp":
+                keywordAttrMap.put("int", setStyle(new Color(143, 143, 71), true)); // Amarillo Claro
+                keywordAttrMap.put("float", setStyle(new Color(143, 143, 71), false)); // Amarillo Claro
+                keywordAttrMap.put("double", setStyle(new Color(143, 143, 71), false)); // Amarillo Claro
+                keywordAttrMap.put("char", setStyle(new Color(143, 143, 71), false)); // Amarillo Claro
+                keywordAttrMap.put("bool", setStyle(new Color(143, 143, 71), false)); // Amarillo Claro
+                keywordAttrMap.put("void", setStyle(new Color(143, 143, 71), false)); // Amarillo Claro
+        
+                keywordAttrMap.put("if", setStyle(new Color(107, 107, 143), true)); // Azul Grisáceo
+                keywordAttrMap.put("else", setStyle(new Color(107, 107, 143), false)); // Azul Grisáceo
+                keywordAttrMap.put("switch", setStyle(new Color(107, 107, 143), false)); // Azul Grisáceo
+                keywordAttrMap.put("case", setStyle(new Color(107, 107, 143), false)); // Azul Grisáceo
+                keywordAttrMap.put("default", setStyle(new Color(107, 107, 143), false)); // Azul Grisáceo
+        
+                keywordAttrMap.put("while", setStyle(new Color(107, 143, 107), true)); // Verde Grisáceo
+                keywordAttrMap.put("for", setStyle(new Color(107, 143, 107), false)); // Verde Grisáceo
+                keywordAttrMap.put("do", setStyle(new Color(107, 143, 107), false)); // Verde Grisáceo
+                keywordAttrMap.put("return", setStyle(new Color(107, 143, 107), false)); // Verde Grisáceo
+        
+                keywordAttrMap.put("cout", setStyle(new Color(71, 107, 143), true)); // Azul Claro
+                keywordAttrMap.put("cin", setStyle(new Color(71, 107, 143), false)); // Azul Claro
+        
+                keywordAttrMap.put("and", setStyle(new Color(143, 107, 71), true)); // Naranja Claro
+                keywordAttrMap.put("or", setStyle(new Color(143, 107, 71), false)); // Naranja Claro
+                keywordAttrMap.put("not", setStyle(new Color(143, 107, 71), false)); // Naranja Claro
+                keywordAttrMap.put("==", setStyle(new Color(143, 107, 71), false)); // Naranja Claro
+                keywordAttrMap.put("!=", setStyle(new Color(143, 107, 71), false)); // Naranja Claro
+                keywordAttrMap.put("<", setStyle(new Color(143, 107, 71), false)); // Naranja Claro
+                keywordAttrMap.put(">", setStyle(new Color(143, 107, 71), false)); // Naranja Claro
+                keywordAttrMap.put("<=", setStyle(new Color(143, 107, 71), false)); // Naranja Claro
+                keywordAttrMap.put(">=", setStyle(new Color(143, 107, 71), false)); // Naranja Claro
+        
+                defaultAttrSet = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, new Color(45, 45, 45)); // Gris Oscuro
+                break;
 
-        // keywordAttrMap.put("ENTERO", setStyle(new Color(38, 139, 210), true)); // Solarized Light Azul
-        // keywordAttrMap.put("ARREGLO", setStyle(new Color(181, 137, 0), true)); // Solarized Light Amarillo
-        // keywordAttrMap.put("MATRIZ", setStyle(new Color(38, 139, 210), true)); // Solarized Light Azul
-        // keywordAttrMap.put("PARA", setStyle(new Color(42, 161, 152), true)); // Solarized Light Cyan
-        // keywordAttrMap.put("HASTA", setStyle(new Color(42, 161, 152), true)); // Solarized Light Cyan
-        // keywordAttrMap.put("ESCRIBIR", setStyle(new Color(101, 123, 131), false)); // Solarized Light Gris
-        // keywordAttrMap.put("FIN", setStyle(new Color(42, 161, 152), true)); // Solarized Light Cyan
-        // keywordAttrMap.put("SEGUN", setStyle(new Color(42, 161, 152), true)); // Solarized Light Cyan
-        // keywordAttrMap.put("SI", setStyle(new Color(42, 161, 152), true)); // Solarized Light Cyan
-        // keywordAttrMap.put("NINGUNO", setStyle(new Color(181, 137, 0), true)); // Solarized Light Amarillo
-        // keywordAttrMap.put("MALO", setStyle(new Color(220, 50, 47), true)); // Solarized Light Rojo
-        // defaultAttrSet = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, new Color(131, 148, 150)); 
+                case "paper-color-cpp":
+                keywordAttrMap.put("int", setStyle(new Color(163, 105, 85), true)); // Coral Claro
+                keywordAttrMap.put("float", setStyle(new Color(163, 105, 85), false)); // Coral Claro
+                keywordAttrMap.put("double", setStyle(new Color(163, 105, 85), false)); // Coral Claro
+                keywordAttrMap.put("char", setStyle(new Color(163, 105, 85), false)); // Coral Claro
+                keywordAttrMap.put("bool", setStyle(new Color(163, 105, 85), false)); // Coral Claro
+                keywordAttrMap.put("void", setStyle(new Color(163, 105, 85), false)); // Coral Claro
+                
+                keywordAttrMap.put("if", setStyle(new Color(122, 167, 167), true)); // Cian Pálido
+                keywordAttrMap.put("else", setStyle(new Color(122, 167, 167), false)); // Cian Pálido
+                keywordAttrMap.put("switch", setStyle(new Color(122, 167, 167), false)); // Cian Pálido
+                keywordAttrMap.put("case", setStyle(new Color(122, 167, 167), false)); // Cian Pálido
+                keywordAttrMap.put("default", setStyle(new Color(122, 167, 167), false)); // Cian Pálido
+                
+                keywordAttrMap.put("for", setStyle(new Color(168, 161, 98), true)); // Amarillo Kaki Claro
+                keywordAttrMap.put("while", setStyle(new Color(168, 161, 98), false)); // Amarillo Kaki Claro
+                keywordAttrMap.put("do", setStyle(new Color(168, 161, 98), false)); // Amarillo Kaki Claro
+                keywordAttrMap.put("break", setStyle(new Color(168, 161, 98), false)); // Amarillo Kaki Claro
+                keywordAttrMap.put("continue", setStyle(new Color(168, 161, 98), false)); // Amarillo Kaki Claro
+                
+                keywordAttrMap.put("return", setStyle(new Color(132, 128, 75), true)); // Amarillo Oscuro
+                
+                keywordAttrMap.put("true", setStyle(new Color(155, 112, 155), false)); // Lavanda
+                keywordAttrMap.put("false", setStyle(new Color(155, 112, 155), false)); // Lavanda
+                
+                keywordAttrMap.put("class", setStyle(new Color(179, 127, 135), true)); // Rosa Claro
+                keywordAttrMap.put("struct", setStyle(new Color(179, 127, 135), false)); // Rosa Claro
+                keywordAttrMap.put("public", setStyle(new Color(179, 127, 135), false)); // Rosa Claro
+                keywordAttrMap.put("private", setStyle(new Color(179, 127, 135), false)); // Rosa Claro
+                keywordAttrMap.put("protected", setStyle(new Color(179, 127, 135), false)); // Rosa Claro
+                
+                keywordAttrMap.put("cout", setStyle(new Color(101, 167, 101), false)); // Verde Claro
+                keywordAttrMap.put("cin", setStyle(new Color(101, 167, 101), false)); // Verde Claro
+                keywordAttrMap.put("endl", setStyle(new Color(101, 167, 101), false)); // Verde Claro
+                
+                keywordAttrMap.put("&&", setStyle(new Color(179, 152, 129), false)); // Melocotón Claro
+                keywordAttrMap.put("||", setStyle(new Color(179, 152, 129), false)); // Melocotón Claro
+                keywordAttrMap.put("!", setStyle(new Color(179, 152, 129), false)); // Melocotón Claro
+                keywordAttrMap.put(">", setStyle(new Color(179, 152, 129), false)); // Melocotón Claro
+                keywordAttrMap.put("<", setStyle(new Color(179, 152, 129), false)); // Melocotón Claro
+                keywordAttrMap.put("==", setStyle(new Color(179, 152, 129), false)); // Melocotón Claro
+                keywordAttrMap.put(">=", setStyle(new Color(179, 152, 129), false)); // Melocotón Claro
+                keywordAttrMap.put("<=", setStyle(new Color(179, 152, 129), false)); // Melocotón Claro
+                keywordAttrMap.put("!=", setStyle(new Color(179, 152, 129), false)); // Melocotón Claro
+                
+                defaultAttrSet = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, new Color(70, 70, 70)); // Gris Oscuro
+                break;
+            
+            case "paper-color":
+                keywordAttrMap.put("LEER LÍNEA", setStyle(new Color(122, 167, 167), true)); // Cian Pálido
+                keywordAttrMap.put("LEER", setStyle(new Color(122, 167, 167), false)); // Cian Pálido
+                keywordAttrMap.put("ESCRIBIR", setStyle(new Color(122, 167, 167), false)); // Cian Pálido
+                
+                keywordAttrMap.put("INICIO", setStyle(new Color(179, 127, 135), true)); // Rosa Claro
+                keywordAttrMap.put("FIN INICIO", setStyle(new Color(179, 127, 135), false)); // Rosa Claro
+                
+                keywordAttrMap.put("FUNCION", setStyle(new Color(163, 105, 85), true)); // Coral Claro
+                keywordAttrMap.put("RETORNA", setStyle(new Color(163, 105, 85), false)); // Coral Claro
+                keywordAttrMap.put("FIN FUNCION", setStyle(new Color(163, 105, 85), false)); // Coral Claro
+                
+                keywordAttrMap.put("Y", setStyle(new Color(179, 152, 129), true)); // Melocotón Claro
+                keywordAttrMap.put("O", setStyle(new Color(179, 152, 129), false)); // Melocotón Claro
+                keywordAttrMap.put("!", setStyle(new Color(179, 152, 129), false)); // Melocotón Claro
+                keywordAttrMap.put(">", setStyle(new Color(179, 152, 129), false)); // Melocotón Claro
+                keywordAttrMap.put("<", setStyle(new Color(179, 152, 129), false)); // Melocotón Claro
+                keywordAttrMap.put("==", setStyle(Color.RED, false)); // Melocotón Claro
+                keywordAttrMap.put(">=", setStyle(new Color(179, 152, 129), false)); // Melocotón Claro
+                keywordAttrMap.put("<=", setStyle(new Color(179, 152, 129), false)); // Melocotón Claro
+                keywordAttrMap.put("!=", setStyle(new Color(179, 152, 129), false)); // Melocotón Claro
+                
+                keywordAttrMap.put("SEGUN", setStyle(new Color(122, 167, 167), true)); // Cian Pálido
+                keywordAttrMap.put("SI", setStyle(new Color(122, 167, 167), false)); // Cian Pálido
+                keywordAttrMap.put("ENTONCES", setStyle(new Color(122, 167, 167), false)); // Cian Pálido
+                keywordAttrMap.put("FINSI", setStyle(new Color(122, 167, 167), false)); // Cian Pálido
+                keywordAttrMap.put("SINO", setStyle(new Color(122, 167, 167), false)); // Cian Pálido
+                keywordAttrMap.put("HACER", setStyle(new Color(122, 167, 167), false)); // Cian Pálido
+                keywordAttrMap.put("CASO", setStyle(new Color(122, 167, 167), false)); // Cian Pálido
+                keywordAttrMap.put("TERMINAR", setStyle(new Color(122, 167, 167), false)); // Cian Pálido
+                keywordAttrMap.put("DEFECTO", setStyle(new Color(122, 167, 167), false)); // Cian Pálido
+                keywordAttrMap.put("FIN SEGUN", setStyle(new Color(122, 167, 167), false)); // Cian Pálido
+                
+                keywordAttrMap.put("REPETIR", setStyle(new Color(168, 161, 98), true)); // Amarillo Kaki Claro
+                keywordAttrMap.put("MIENTRAS", setStyle(new Color(168, 161, 98), false)); // Amarillo Kaki Claro
+                keywordAttrMap.put("PARA", setStyle(new Color(168, 161, 98), false)); // Amarillo Kaki Claro
+                keywordAttrMap.put("HASTA", setStyle(new Color(168, 161, 98), false)); // Amarillo Kaki Claro
+                keywordAttrMap.put("HACER", setStyle(new Color(168, 161, 98), false)); // Amarillo Kaki Claro
+                keywordAttrMap.put("EN", setStyle(new Color(168, 161, 98), false)); // Amarillo Kaki Claro
+                keywordAttrMap.put("FIN MIENTRAS", setStyle(new Color(168, 161, 98), false)); // Amarillo Kaki Claro
+                keywordAttrMap.put("FIN PARA", setStyle(new Color(168, 161, 98), false)); // Amarillo Kaki Claro
+                
+                keywordAttrMap.put("ENTERO", setStyle(new Color(132, 128, 75), true)); // Amarillo Oscuro
+                keywordAttrMap.put("FLOTANTE", setStyle(new Color(132, 128, 75), false)); // Amarillo Oscuro
+                keywordAttrMap.put("CARACTER", setStyle(new Color(132, 128, 75), false)); // Amarillo Oscuro
+                keywordAttrMap.put("]", setStyle(new Color(132, 128, 75), false)); // Amarillo Oscuro
+                keywordAttrMap.put("[", setStyle(new Color(132, 128, 75), false)); // Amarillo Oscuro
+                keywordAttrMap.put("BOOLEANO", setStyle(new Color(132, 128, 75), false)); // Amarillo Oscuro
+                keywordAttrMap.put("VERDADERO", setStyle(new Color(132, 128, 75), false)); // Amarillo Oscuro
+                keywordAttrMap.put("FALSO", setStyle(new Color(132, 128, 75), false)); // Amarillo Oscuro
+                
+                defaultAttrSet = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, new Color(70, 70, 70)); // Gris Oscuro
+                break;
+            
+        }
+        
 
+        
         keywords = keywordAttrMap.keySet();
 
        // Crear un nuevo Keymap basado en el Keymap por defecto
@@ -177,42 +377,35 @@ public class LiveKeywordHighlighter extends JTextPane implements DocumentListene
     @Override
     public void run() {
         StyledDocument doc = getStyledDocument();
-        String text = "";
-        int len = doc.getLength();
+        String text = null;
+
         try {
-            text = doc.getText(0, len);
-        } catch (BadLocationException ble) {
-            ble.printStackTrace();
+            text = doc.getText(0, doc.getLength());
+        } catch (BadLocationException e) {
+            e.printStackTrace();
         }
 
-        doc.setCharacterAttributes(0, len, defaultAttrSet, true);
-
-        int wordStart = -1;
-
-        for (int j = 0; j < text.length(); j++) {
-            char ch = text.charAt(j);
-
-            if (Character.isLetter(ch)) {
-                if (wordStart == -1) {
-                    wordStart = j;
-                }
-            } else {
-                if (wordStart != -1) {
-                    String word = text.substring(wordStart, j).toUpperCase();
-                    if (keywords.contains(word)) {
-                        AttributeSet attrSet = keywordAttrMap.get(word);
-                        doc.setCharacterAttributes(wordStart, word.length(), attrSet, false);
-                    }
-                    wordStart = -1;
-                }
-            }
+        if (text == null) {
+            return;
         }
 
-        if (wordStart != -1) {
-            String word = text.substring(wordStart).toUpperCase();
-            if (keywords.contains(word)) {
-                AttributeSet attrSet = keywordAttrMap.get(word);
-                doc.setCharacterAttributes(wordStart, word.length(), attrSet, false);
+        // Limpiar estilos actuales
+        doc.setCharacterAttributes(0, text.length(), defaultAttrSet, true);
+
+        // Aplicar estilos para palabras clave
+        for (String keyword : keywords) {
+            int index = 0;
+            while ((index = text.indexOf(keyword, index)) >= 0) {
+                // Verificar si la palabra encontrada es una palabra completa
+                boolean isCompleteWord = 
+                    (index == 0 || !Character.isLetterOrDigit(text.charAt(index - 1))) &&
+                    (index + keyword.length() == text.length() || !Character.isLetterOrDigit(text.charAt(index + keyword.length())));
+
+                if (isCompleteWord) {
+                    doc.setCharacterAttributes(index, keyword.length(), keywordAttrMap.get(keyword), false);
+                }
+
+                index += keyword.length();
             }
         }
     }

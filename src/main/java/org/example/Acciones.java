@@ -29,7 +29,7 @@ public class Acciones {
             System.err.println("No se pudo cargar la biblioteca nativa: " + e.getMessage());
         }
     }
-    private native static void CompilarYEjecutar(String RutaArchivo);
+    public native static void CompilarYEjecutar(String RutaArchivo);
 
     public static void ejecutar(File TempFile)
     {
