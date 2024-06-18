@@ -56,7 +56,7 @@ public class PseudocodeProcessorCiclos {
     }
 
     private String convertForLoops(String pseudocode) {
-        Pattern pattern = Pattern.compile("(?sm)PARA(.*?)HASTA(.*?)EN(.*?)HACER:(.*?)FIN PARA");
+        Pattern pattern = Pattern.compile("(?sm)PARA\\s+(.*?)\\s+HASTA\\s+(.*?)\\s+EN\\s+(.*?)\\s+HACER:\\s+(.*?)\\s+FIN PARA");
         Matcher matcher = pattern.matcher(pseudocode);
         StringBuffer sb = new StringBuffer();
         while (matcher.find()) {
@@ -71,7 +71,7 @@ public class PseudocodeProcessorCiclos {
     }
 
     private String convertWhileLoops(String pseudocode) {
-        Pattern pattern = Pattern.compile("(?sm)MIENTRAS(.*?)HACER:(.*?)FIN MIENTRAS");
+        Pattern pattern = Pattern.compile("(?sm)MIENTRAS\\s+(.*?)\\s+HACER:\\s+(.*?)\\s+FIN MIENTRAS");
         Matcher matcher = pattern.matcher(pseudocode);
         StringBuffer sb = new StringBuffer();
         while (matcher.find()) {
@@ -84,7 +84,7 @@ public class PseudocodeProcessorCiclos {
     }
 
     private String convertDoWhileLoops(String pseudocode) {
-        Pattern pattern = Pattern.compile("(?sm)REPETIR:(.*?)MIENTRAS(.*?)(\\r|$)");
+        Pattern pattern = Pattern.compile("(?sm)REPETIR:\\s+(.*?)\\s+MIENTRAS\\s+(.*?)(\\r|$)");
         Matcher matcher = pattern.matcher(pseudocode);
         StringBuffer sb = new StringBuffer();
         while (matcher.find()) {
