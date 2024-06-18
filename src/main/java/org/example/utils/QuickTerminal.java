@@ -1,11 +1,10 @@
 package org.example.utils;
 
 import java.awt.BorderLayout;
-import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -21,6 +20,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.text.AbstractDocument;
@@ -28,33 +28,87 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 
-// Codigo realizado por MadProgrammer -> StackOverFlow: Java Linux Terminal in JPanel
+import org.example.Acciones;
 
 public class QuickTerminal {
 
-    public QuickTerminal() {
-        // EventQueue.invokeLater(new Runnable() {
-        //     @Override
-        //     public void run() {
-        //         try {
-        //             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        //         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
-        //         }
-        //
-        //         JFrame frame = new JFrame("Testing");
-        //         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        //         frame.setLayout(new BorderLayout());
-        //         frame.add(new ConsolePane());
-        //         frame.pack();
-        //         frame.setLocationRelativeTo(null);
-        //         frame.setVisible(true);
-        //     }
-        // });
-        
+    public QuickTerminal() {}
+
+    public void compilar(File nombreArchivoCpp) {
+        // Obtener la ruta del archivo y el nombre sin la extensión
+        String ruta = nombreArchivoCpp.getParent();
+        String nombreSinExtension = nombreArchivoCpp.getName().replaceFirst("[.][^.]+$", "");
+    
+        // Construir la ruta del archivo ejecutable de salida
+        String salidaPath = ruta + File.separator + nombreSinExtension + ".exe";
+    
+        // Reemplazar las barras inclinadas con barras invertidas dobles
+        salidaPath = salidaPath.replace("/", "\\\\");
+    
+        String comandoCompilacion = "g++ -o " + salidaPath + " " + nombreArchivoCpp;
+    
+        try {
+            // Compilar el archivo .cpp
+            Process procesoCompilacion = Runtime.getRuntime().exec(comandoCompilacion);
+            procesoCompilacion.waitFor();
+    
+            // Verificar si se generó el archivo ejecutable
+            File ejecutable = new File(salidaPath);
+            if (ejecutable.exists()) {
+                System.out.println("Archivo compilado correctamente: " + salidaPath);
+            } else {
+                System.err.println("No se encontró el archivo ejecutable generado. y/o hubo un error");
+            }
+        } catch (IOException | InterruptedException ex) {
+            ex.printStackTrace();
+        }
+    }
+    
+    public void ejecutarCpp(String rutaEjecutable) {
+        Command cmd = console.cmd;
+    
+        if (!cmd.isRunning()) {
+            cmd.execute(rutaEjecutable);
+        } else {
+            try {
+                cmd.send(rutaEjecutable + "\n");
+            } catch (IOException ex) {
+                console.appendText("!! Failed to send command to process: " + ex.getMessage() + "\n");
+            }
+        }
+    }
+    
+    public void compilarYEjecutar(File nombreArchivoCpp) {
+
+        compilar(nombreArchivoCpp);
+
+        // Obtener la ruta del archivo y el nombre sin la extensión
+        String ruta = nombreArchivoCpp.getParent();
+        String nombreSinExtension = nombreArchivoCpp.getName().replaceFirst("[.][^.]+$", "");
+    
+        // Construir la ruta del archivo ejecutable generado
+        String salidaPath = ruta + File.separator + nombreSinExtension + ".exe";
+        salidaPath = salidaPath.replace("/", "\\\\");
+    
+        ejecutarCpp(salidaPath);
     }
 
-    public JPanel getJPanelTerminal(){
-      return new ConsolePane();
+    public void ejecutar(File nombreArchivoCpp) {
+        // String rutaArchivo = new File("").getAbsolutePath() + "/resources/img/mi_archivo.cpp";
+        // File archivoPrueba = new File(rutaArchivo);
+        // compilarYEjecutar(archivoPrueba);
+        compilarYEjecutar(nombreArchivoCpp);
+    }
+
+    ConsolePane console;
+
+    public JPanel getJPanelTerminal() {
+        console = new ConsolePane();
+        return console;
+    }
+
+    public void clearTextArea() {
+        console.textArea.setText("");
     }
 
     public interface CommandListener {
@@ -68,9 +122,9 @@ public class QuickTerminal {
 
     public class ConsolePane extends JPanel implements CommandListener, Terminal {
 
-        private JTextArea textArea;
+        public JTextArea textArea;
         private int userInputStart = 0;
-        private Command cmd;
+        public Command cmd;
 
         public ConsolePane() {
 
@@ -79,6 +133,15 @@ public class QuickTerminal {
             setLayout(new BorderLayout());
             textArea = new JTextArea(20, 30);
             ((AbstractDocument) textArea.getDocument()).setDocumentFilter(new ProtectedDocumentFilter(this));
+
+            JScrollPane scroll = new JScrollPane();
+            scroll.setBorder(null);
+            scroll.getVerticalScrollBar().setBorder(null);
+            scroll.getHorizontalScrollBar().setBorder(null);
+
+            // Opcional: Eliminar el borde del JTextArea si es necesario
+            textArea.setBorder(null);
+
             add(new JScrollPane(textArea));
 
             InputMap im = textArea.getInputMap(WHEN_FOCUSED);
@@ -88,9 +151,10 @@ public class QuickTerminal {
             am.put("insert-break", new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
+
                     int range = textArea.getCaretPosition() - userInputStart;
                     try {
-                        String text = textArea.getText(userInputStart, range).trim();
+                        String text = textArea.getText(userInputStart, range).trim().replace("/", "\\\\");
                         System.out.println("[" + text + "]");
                         userInputStart += range;
                         if (!cmd.isRunning()) {
@@ -123,8 +187,12 @@ public class QuickTerminal {
 
         @Override
         public void commandCompleted(String cmd, int result) {
-            appendText("\n> " + cmd + " exited with " + result + "\n");
-            appendText("\n");
+            Timer timer = new Timer(1000, e -> {
+                appendText("\n> " + cmd + " exited with " + result + "\n");
+                appendText("\n");
+            });
+            timer.setRepeats(false); // Solo se ejecutará una vez
+            timer.start();
         }
 
         protected void updateUserInputPos() {
@@ -157,7 +225,7 @@ public class QuickTerminal {
 
     public class AppendTask implements Runnable {
 
-        private Terminal terminal;
+        public Terminal terminal;
         private String text;
 
         public AppendTask(Terminal textArea, String text) {
@@ -174,7 +242,7 @@ public class QuickTerminal {
     public class Command {
 
         private CommandListener listener;
-        private ProcessRunner runner;
+        private ProcessExecutor executor;
 
         public Command(CommandListener listener) {
             this.listener = listener;
@@ -182,7 +250,7 @@ public class QuickTerminal {
 
         public boolean isRunning() {
 
-            return runner != null && runner.isAlive();
+            return executor != null && executor.isAlive();
 
         }
 
@@ -228,27 +296,45 @@ public class QuickTerminal {
 
                 }
 
-                runner = new ProcessRunner(listener, values);
+                executor = new ProcessExecutor(listener, values);
 
             }
 
         }
 
         public void send(String cmd) throws IOException {
-            runner.write(cmd);
+            executor.write(cmd);
         }
     }
 
-    public class ProcessRunner extends Thread {
+    // Detecta el sistema operativo y determina el shell adecuado
+    private String getShellCommand() {
+
+        String osName = System.getProperty("os.name").toLowerCase();
+        if (osName.contains("win")) {
+            return "cmd.exe";
+        } else {
+            return "/bin/bash";
+        }
+    }
+
+    // Implementación actualizada de ProcessExecutor
+    public class ProcessExecutor extends Thread {
 
         private List<String> cmds;
         private CommandListener listener;
 
         private Process process;
 
-        public ProcessRunner(CommandListener listener, List<String> cmds) {
-            this.cmds = cmds;
+        public ProcessExecutor(CommandListener listener, List<String> cmds) {
             this.listener = listener;
+            String shell = getShellCommand();
+            this.cmds = new ArrayList<>();
+            this.cmds.add(shell);
+            if (shell.equals("cmd.exe")) {
+                this.cmds.add("/c");
+            }
+            this.cmds.addAll(cmds);
             start();
         }
 
@@ -257,14 +343,12 @@ public class QuickTerminal {
             try {
                 System.out.println("cmds = " + cmds);
                 ProcessBuilder pb = new ProcessBuilder(cmds);
-                pb.redirectErrorStream();
+                pb.redirectErrorStream(true);
                 process = pb.start();
                 StreamReader reader = new StreamReader(listener, process.getInputStream());
-                // Need a stream writer...
 
                 int result = process.waitFor();
 
-                // Terminate the stream writer
                 reader.join();
 
                 StringJoiner sj = new StringJoiner(" ");
@@ -333,14 +417,14 @@ public class QuickTerminal {
         @Override
         public void remove(FilterBypass fb, int offset, int length) throws BadLocationException {
             if (offset >= getUserInput().getUserInputStart()) {
-                super.remove(fb, offset, length); //To change body of generated methods, choose Tools | Templates.
+                super.remove(fb, offset, length); // To change body of generated methods, choose Tools | Templates.
             }
         }
 
         @Override
         public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
             if (offset >= getUserInput().getUserInputStart()) {
-                super.replace(fb, offset, length, text, attrs); //To change body of generated methods, choose Tools | Templates.
+                super.replace(fb, offset, length, text, attrs); // To change body of generated methods, choose Tools | Templates.
             }
         }
     }

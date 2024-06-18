@@ -24,6 +24,7 @@ import java.io.IOException;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JOptionPane;
@@ -55,8 +56,6 @@ public class Mavenproject1 extends javax.swing.JFrame {
         initDesign();
     }
 
-
-    
 
     private void initDesign() {
 
@@ -299,24 +298,28 @@ public class Mavenproject1 extends javax.swing.JFrame {
         JLabel minimizeButton = new JLabel(iconMin);
         JLabel consoleLabel = new JLabel(iconConsola);
         
+        ventana = this;
+
         clearButton.addMouseListener(new MouseAdapter() {
   
-          @Override
-          public void mouseEntered(MouseEvent e) {
-              // Cambiar la apariencia cuando el mouse entra al JLabel
-              clearButton.setIcon(iconClear_hover); // Cambia el icono por otro con efecto hover
-          }
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                    // Cambiar la apariencia cuando el mouse entra al JLabel
+                clearButton.setIcon(iconClear_hover); // Cambia el icono por otro con efecto hover
+            }
+        
+            @Override
+            public void mouseExited(MouseEvent e) {
+                    // Restaurar la apariencia cuando el mouse sale del JLabel
+                clearButton.setIcon(iconClear); // Restaura el icono original
+            }
 
-          @Override
-          public void mouseExited(MouseEvent e) {
-              // Restaurar la apariencia cuando el mouse sale del JLabel
-              clearButton.setIcon(iconClear); // Restaura el icono original
-          }
-
-          @Override
-          public void mouseClicked(MouseEvent e) {
-              // Acción a realizar cuando se hace clic en el botón de limpiar
-          }
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                //quickTerminal.clearTextArea(); //Mal implementado, demasiado confuso
+                // quickTerminal.ejecutar(new File(""));
+                // Acción a realizar cuando se hace clic en el botón de limpiar
+            }
         });
 
         maximizeButton.addMouseListener(new MouseAdapter() {
@@ -336,9 +339,8 @@ public class Mavenproject1 extends javax.swing.JFrame {
           @Override
           public void mouseClicked(MouseEvent e) {
               double maxWeight = 0; // Peso máximo para maximizar el split
-              splitPane.setResizeWeight(maxWeight); // Establecer el peso del resize para maximizar el split
-              splitPane.revalidate(); 
-              System.out.println("Click en maximizar");
+              splitPane.setDividerLocation(10);
+              splitPane.revalidate();
           }
         });
 
@@ -353,15 +355,16 @@ public class Mavenproject1 extends javax.swing.JFrame {
           @Override
           public void mouseExited(MouseEvent e) {
               // Restaurar la apariencia cuando el mouse sale del JLabel
+
               minimizeButton.setIcon(iconMin); // Restaura el icono original
           }
 
           @Override
           public void mouseClicked(MouseEvent e) {
              double maxWeight = 1; // Peso máximo para maximizar el split
-            splitPane.setResizeWeight(maxWeight); // Establecer el peso del resize para maximizar el split
-            splitPane.revalidate();
-            System.out.println("Click en minimizar");
+             splitPane.setResizeWeight(maxWeight); // Establecer el peso del resize para maximizar el split
+             splitPane.setDividerLocation(ventana.getSize().height-100);
+             System.out.println(ventana.getSize().height-100);
           }
         });
 
@@ -385,9 +388,13 @@ public class Mavenproject1 extends javax.swing.JFrame {
         // Agregar el headerPanel al consolePanel en la región norte
         consolePanel.setLayout(new BorderLayout());
         consolePanel.add(headerPanel, BorderLayout.NORTH);
-               
-        consolePanel.add(new QuickTerminal().getJPanelTerminal(), BorderLayout.CENTER);
+        
+        quickTerminal = new QuickTerminal();
+
+        consolePanel.add(quickTerminal.getJPanelTerminal(), BorderLayout.CENTER);
         consolePanel.setBackground(Color.WHITE);
+        headerPanel.setBackground(Color.WHITE);
+        labelPanel.setBackground(Color.WHITE);
        
         consoleLabel.setBorder(new EmptyBorder(0, 10, 0, 0));
         labelPanel.setBorder(new EmptyBorder(0,0,0,10));
@@ -567,6 +574,9 @@ public class Mavenproject1 extends javax.swing.JFrame {
     ImageIcon iconMin_hover;
 
     JSplitPane splitPane;
+    public static QuickTerminal quickTerminal;
+
+    JFrame ventana;
 
 
     // End of variables declaration//GEN-END:variables
