@@ -9,13 +9,10 @@
 package compiladores.functions;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 import java.util.regex.Pattern;
 
 public class FunctionsBody {
-
     private List<String> functionsNames = new ArrayList<>();
     private boolean mainFlag = false;
     private boolean closeMainFlag = false; //added
@@ -84,19 +81,23 @@ public class FunctionsBody {
                             continue;
                         }
                     }
-                    if (!returnFlag) {
-                        newValue.add(splitChain[k]);
-                        if (splitChain[k].charAt(splitChain[k].length() - 1) == ')' && k == splitChain.length - 1) {
-                            newValue.add(";");
-                        } else {
-                            newValue.add(" ");
-                        }
+                    if(splitChain[k].isBlank()) {
+                        newValue.add(" ");
                     } else {
-                        newValue.add(splitChain[k]);
-                        if (k == splitChain.length - 1) {
-                            newValue.add(";");
+                        if (!returnFlag) {
+                            newValue.add(splitChain[k]);
+                            if (splitChain[k].charAt(splitChain[k].length() - 1) == ')' && k == splitChain.length - 1) {
+                                newValue.add(";");
+                            } else {
+                                newValue.add(" ");
+                            }
                         } else {
-                            newValue.add(" ");
+                            newValue.add(splitChain[k]);
+                            if (k == splitChain.length - 1) {
+                                newValue.add(";");
+                            } else {
+                                newValue.add(" ");
+                            }
                         }
                     }
                 }

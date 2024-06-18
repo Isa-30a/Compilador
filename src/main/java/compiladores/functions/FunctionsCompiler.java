@@ -29,8 +29,6 @@ public class FunctionsCompiler {
         int lineCounter = 0;
 
         String[] fullPseudo = pseudoCode.toString().trim().split("\\n", -1);
-        int beginIndex = 0;
-        int endIndex;
         for (int i = 0; i < fullPseudo.length; i++) {
             lineCounter++;
             declarationsQueue.offer(fd.declare(fullPseudo[i], fb.getFunctionsNames()));
