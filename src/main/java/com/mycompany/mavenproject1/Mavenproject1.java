@@ -385,7 +385,7 @@ public class Mavenproject1 extends javax.swing.JFrame {
         headerPanel.add(consoleLabel, BorderLayout.WEST);
   
         // Agregar los botones al headerPanel
-        // labelPanel.add(clearButton);
+        labelPanel.add(clearButton);
         labelPanel.add(minimizeButton);
         labelPanel.add(maximizeButton);
 
@@ -500,13 +500,17 @@ public class Mavenproject1 extends javax.swing.JFrame {
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         Acciones.compilar(obtenerArchivo());
+        quickTerminal.compilar(obtenerArchivo());
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
         // coloque obtener archivo, pero me tienen que enviar el archivo compilado en la opcion 3
         // mira la clase de acciones para mas informacion al respecto
         // att. Nestor
-        Acciones.ejecutar(Acciones.compilar(obtenerArchivo()));
+        //Acciones.ejecutar(Acciones.compilar(obtenerArchivo()));
+        //
+        //
+        quickTerminal.ejecutar(new File("temp.cpp"));
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     /**

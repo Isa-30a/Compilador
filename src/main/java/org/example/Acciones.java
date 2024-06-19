@@ -156,55 +156,55 @@ public class Acciones {
         //att. Mario
     }
 
-    public static File compilar(File TempFile)
-    {
-        // Aqui haz la tarea de mandarle a todos los compiladores las partes
-        // Que les corresponde, como salida haz un archivo .txt que tenga el codigo
-        // En c++ ya traducido para poder enviarlo al metodo de ejecutar
-        // El metodo ejecutar va a compilar en c++ el archivo .txt que le pases
-        // Para que funcione mi metodo solo mandale el archivo que aqui generaste
-        // att. Nestor
-        File compiled = new File(TempFile.getParentFile(), "compiled.txt");
-        try(BufferedReader reader = new BufferedReader(new FileReader(TempFile))){
-            StringBuilder builder = new StringBuilder();
-            FunctionsCompiler functionsComplier = new FunctionsCompiler();
-            PseudocodeProcessorCiclos ciclesCompiler = new PseudocodeProcessorCiclos();
-            ConectToStringTxt variablesCompiler = new ConectToStringTxt();
-            IfElseConverter conditionalStructuresCompiler = new IfElseConverter();
-            LogicalOperators logicalOperatorsCompiler = new LogicalOperators();
-            cooking inputOutputCompiler = new cooking();
+   public static File compilar(File TempFile) {
+      // Define la ruta absoluta de la raíz del proyecto
+    
+      // Define el archivo de salida en la raíz del proyecto
+      File compiled = new File("temp.cpp");
+
+      try (BufferedReader reader = new BufferedReader(new FileReader(TempFile))) {
+          StringBuilder builder = new StringBuilder();
           
-            String linea;
-            String toCompile;
-            while((linea = reader.readLine()) != null){
-                builder.append(linea + '\n');
-            }
-            toCompile = functionsComplier.pseudoToCpp(builder.toString());
-            toCompile = variablesCompiler.processString(toCompile);
-            toCompile = conditionalStructuresCompiler.convertToCpp(toCompile);
-            toCompile = logicalOperatorsCompiler.convertToCpp(toCompile);
-            toCompile = ciclesCompiler.convertToCpp(toCompile);
-            toCompile = inputOutputCompiler.inputOutputTraductor(toCompile);
-            toCompile = "#include <iostream>\n#include <string.h>\nusing namespace std;\n".concat(toCompile);
-            Mavenproject1.jTextArea2.setText(toCompile);
-
-            Files.write(compiled.toPath(), toCompile.getBytes());
-            try {
-                FileWriter writer = new FileWriter(compiled);
-                writer.write(toCompile);
-                writer.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            
-        }catch (IOException exception){
-            JOptionPane.showMessageDialog(null, "Error al traducir el archivo: " + exception.getMessage());
-        }
+          // Instancias de los diferentes compiladores
+          FunctionsCompiler functionsComplier = new FunctionsCompiler();
+          PseudocodeProcessorCiclos ciclesCompiler = new PseudocodeProcessorCiclos();
+          ConectToStringTxt variablesCompiler = new ConectToStringTxt();
+          IfElseConverter conditionalStructuresCompiler = new IfElseConverter();
+          LogicalOperators logicalOperatorsCompiler = new LogicalOperators();
+          cooking inputOutputCompiler = new cooking();
         
-        
+          String linea;
+          String toCompile;
+          
+          // Lee el archivo línea por línea y construye el contenido
+          while ((linea = reader.readLine()) != null) {
+              builder.append(linea).append('\n');
+          }
+          
+          // Procesa el contenido usando los diferentes compiladores
+          toCompile = functionsComplier.pseudoToCpp(builder.toString());
+          toCompile = variablesCompiler.processString(toCompile);
+          toCompile = conditionalStructuresCompiler.convertToCpp(toCompile);
+          toCompile = logicalOperatorsCompiler.convertToCpp(toCompile);
+          toCompile = ciclesCompiler.convertToCpp(toCompile);
+          toCompile = inputOutputCompiler.inputOutputTraductor(toCompile);
+          toCompile = "#include<iostream>\n#include<string.h>\n\nusing namespace std;\n\n".concat(toCompile);
+          
+          // Actualiza el JTextArea con el contenido compilado
+          // Mavenproject1.jTextArea2.setText(toCompile);
+          Mavenproject1.writeToCppField(toCompile);
 
+          // Escribe el contenido compilado en el archivo de salida
+          Files.write(compiled.toPath(), toCompile.getBytes());
+          System.out.println("Archivo escrito en: " + compiled.getAbsolutePath());
+          
+      } catch (IOException exception) {
+          // Muestra un mensaje de error en caso de excepción
+          JOptionPane.showMessageDialog(null, "Error al traducir el archivo: " + exception.getMessage());
+          exception.printStackTrace();
+      }
+      
+      return compiled;
+  }
 
-
-        return compiled;
-    }
 }
