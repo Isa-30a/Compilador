@@ -14,12 +14,12 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.mycompany.mavenproject1.Mavenproject1;
 
-import compiladores.functions.FunctionsCompiler;
+import compiladores.DeclarationAndAssignment.translatorDeclarationAssignment.ConectToStringTxt;
 import compiladores.ciclos.PseudocodeProcessorCiclos;
 import compiladores.condicionales.IfElseConverter;
 import compiladores.condicionales.LogicalOperators;
+import compiladores.functions.FunctionsCompiler;
 import compiladores.inputOutput.cooking;
-import compiladores.DeclarationAndAssignment.translatorDeclarationAssignment.ConectToStringTxt;
 public class Acciones {
 
     static {
