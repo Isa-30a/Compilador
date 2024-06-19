@@ -60,14 +60,28 @@ public class QuickTerminal {
             
             if(ejecutable.exists()){
               
-            if (osName.contains("win")) {
-              Process procesoCompilacion = Runtime.getRuntime().exec("del temp.exe");
-              procesoCompilacion.waitFor();
-            }else{
-              Process procesoCompilacion = Runtime.getRuntime().exec("rm temp.exe");
-              procesoCompilacion.waitFor();
-            }
-              System.out.println("Se eliminó el archivo temp.exe para generar otro");
+                if (osName.contains("win")) {
+                    ProcessBuilder procesoCompilacion = new ProcessBuilder("cmd.exe", "/c", "del", "temp.exe");
+                    Process process = procesoCompilacion.start();
+
+                    try {
+                        int exitCode = process.waitFor();
+                        if (exitCode != 0) {
+                            throw new IOException("Failed to delete file, exit code: " + exitCode);
+                        }
+                        System.out.println("Delete file succesfuly");
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        throw new IOException("File deletion was interrupted", e);
+                    }
+                    System.out.println("Se eliminó el archivo temp.exe para generar otro (win)");
+
+                }else{
+                    Process procesoCompilacion = Runtime.getRuntime().exec("rm temp.exe");
+                    procesoCompilacion.waitFor();
+                    System.out.println("Se eliminó el archivo temp.exe para generar otro");
+                }
+                
             }
 
           if(!console.cmd.isRunning()){
