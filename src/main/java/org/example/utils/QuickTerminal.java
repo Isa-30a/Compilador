@@ -36,6 +36,9 @@ public class QuickTerminal {
     public QuickTerminal() {}
 
     public void compilar(File nombreArchivoCpp) {
+
+        String nombre = new File("").getAbsolutePath() + "/temp.cpp";
+        nombreArchivoCpp = new File(nombre);
         // Obtener la ruta del archivo y el nombre sin la extensión
         String ruta = nombreArchivoCpp.getParent();
         String nombreSinExtension = nombreArchivoCpp.getName().replaceFirst("[.][^.]+$", "");
@@ -52,18 +55,33 @@ public class QuickTerminal {
         String comandoCompilacion = "g++ -o " + salidaPath + " " + nombreArchivoCpp;
     
         try {
-            // Compilar el archivo .cpp
-            Process procesoCompilacion = Runtime.getRuntime().exec(comandoCompilacion);
-            procesoCompilacion.waitFor();
-    
-            // Verificar si se generó el archivo ejecutable
+            
             File ejecutable = new File(salidaPath);
+            
+            if(ejecutable.exists()){
+              
+            if (osName.contains("win")) {
+              Process procesoCompilacion = Runtime.getRuntime().exec("del temp.exe");
+              procesoCompilacion.waitFor();
+            }else{
+              Process procesoCompilacion = Runtime.getRuntime().exec("rm temp.exe");
+              procesoCompilacion.waitFor();
+            }
+              System.out.println("Se eliminó el archivo temp.exe para generar otro");
+            }
+
+          if(!console.cmd.isRunning()){
+            console.cmd.execute(comandoCompilacion);
+          }
+
+          // Verificar si se generó el archivo ejecutable
             if (ejecutable.exists()) {
                 System.out.println("Archivo compilado correctamente: " + salidaPath);
             } else {
                 System.err.println("No se encontró el archivo ejecutable generado. y/o hubo un error");
             }
         } catch (IOException | InterruptedException ex) {
+            System.out.println(ex);
             ex.printStackTrace();
         }
     }
@@ -83,8 +101,6 @@ public class QuickTerminal {
     }
     
     public void compilarYEjecutar(File nombreArchivoCpp) {
-
-        compilar(nombreArchivoCpp);
 
         // Obtener la ruta del archivo y el nombre sin la extensión
         String ruta = nombreArchivoCpp.getParent();
